@@ -1,0 +1,53 @@
+.skills-selection {
+  margin-bottom: 20px;
+}
+
+.skills-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.skills-tags span {
+  background-color: #e0e0e0;
+  color: #333;
+  padding: 5px 10px;
+  border-radius: 15px;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.skills-tags span.selected {
+  background-color: #007bff;
+  color: white;
+}
+
+
+.add-skill {
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
+}
+
+.add-skill input {
+  flex: 1;
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.add-skill button {
+  padding: 5px 15px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.add-skill button:hover {
+  background-color: #0056b3;
+}

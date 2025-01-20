@@ -1,0 +1,22 @@
+<div class="skills-selection">
+  <h3>Select Your Skills</h3>
+  <div class="skills-tags">
+    <span
+      *ngFor="let skill of availableSkills"
+      [class.selected]="selectedSkills.includes(skill)"
+      (click)="toggleSkill(skill)">
+      {{ skill }}
+    </span>
+  </div>
+  <!-- Add Custom Skill -->
+  <div class="add-skill">
+    <input
+      type="text"
+      [(ngModel)]="newSkill"
+      placeholder="Add a custom skill..."
+      (keydown.enter)="addSkill()"
+    />
+    <button type="button" (click)="addSkill()">Add</button>
+  </div>
+</div>
+

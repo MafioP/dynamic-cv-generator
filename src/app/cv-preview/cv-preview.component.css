@@ -1,0 +1,69 @@
+.cv-container {
+  font-family: Arial, sans-serif;
+  color: #333;
+  background: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.cv-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.cv-header h1 {
+  font-size: 2em;
+  margin: 0;
+}
+
+.cv-header h2 {
+  font-size: 1.2em;
+  color: #666;
+  margin: 5px 0;
+}
+
+.cv-header p {
+  margin: 2px 0;
+}
+
+.cv-section {
+  margin-bottom: 20px;
+}
+
+.cv-section h3 {
+  font-size: 1.5em;
+  color: #000000;
+  margin-bottom: 10px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 5px;
+}
+
+.skills-list, .languages-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.skills-list li, .languages-list li {
+  background: #6d6d6d;
+  color: white;
+  padding: 5px 10px;
+  margin: 5px 5px;
+  border-radius: 5px;
+  display: inline-block;
+}
+
+.cv-section ul {
+  margin-top: 10px;
+}
+
+.cv-section h4 {
+  font-size: 1.2em;
+  margin: 5px 0;
+}
+
+.cv-section p {
+  margin: 5px 0;
+  color: #555;
+}
