@@ -8,8 +8,7 @@ import { CvService } from '../services/cv.service';
 })
 export class InputFormComponent {
   availableSkills: string[] = [
-    'Java', 'Python', 'Web Dev', 'C++/Embedded',
-    'JavaScript/TypeScript', 'Git', 'CI/CD', 'Angular', 'NodeJS'
+    'Java', 'Python', 'Web Dev', 'C++/Embedded','JavaScript', 'TypeScript', 'Git', 'CI/CD', 'Angular', 'NodeJS', 'OOP', 'Scripting', 'MySQL', 'HTML', 'CSS', 'REST APIs', 'Google Cloud', 'Scrum', 'Agile Development'
   ];
   selectedSkills: string[] = [];
   newSkill: string = '';

@@ -2,9 +2,9 @@
   <!-- Personal Information -->
   <header class="cv-header">
     <div class="profile-picture">
-      <img src="assets/profile-placeholder.png" alt="Profile Picture" />
+      <img src="../../assets/Profilepic.jpg" alt="Profile Picture"/>
     </div>
-    <div class="header-text">
+    <div class="personal-info">
       <h1>Mario Pereda</h1>
       <h2>Junior Software Engineer</h2>
       <p>+49 1724 605722 | mario.pereda.08&#64;gmail.com</p>
@@ -25,12 +25,15 @@
   <!-- Professional Experience -->
   <section class="cv-section">
     <h3>Professional Experience</h3>
-    <div *ngFor="let experience of experiences">
+    <div *ngFor="let experience of experiences" class="experience-item">
       <h4>{{ experience.position }} | {{ experience.company }}</h4>
-      <p>{{ experience.date }}</p>
-      <p>{{ experience.description }}</p>
+      <p><strong>{{ experience.date }}</strong></p>
+      <ul>
+        <li *ngFor="let detail of experience.details">{{ detail }}</li>
+      </ul>
     </div>
   </section>
+
 
   <!-- Education -->
   <section class="cv-section">
@@ -46,6 +49,11 @@
     <h3>Skills</h3>
     <ul class="skills-list">
       <li *ngFor="let skill of skills">{{ skill }}</li>
+      <li>Fast Learner</li>
+      <li>Team Player</li>
+      <li>Problem Solving</li>
+      <li>Flexible</li>
+      <li>Good Communication</li>
     </ul>
   </section>
 
@@ -66,3 +74,5 @@
     </div>
   </section>
 </div>
+
+<button (click)="downloadPDF()">Download as PDF</button>
