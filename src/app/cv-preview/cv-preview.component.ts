@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, Renderer2 } from '@angular/core';
 import { CvService } from '../services/cv.service';
-import jsPDF from 'jspdf';
+import { PdfConverterService } from '../services/pdf-converter.service';
 
 @Component({
   selector: 'app-cv-preview',
@@ -59,42 +59,220 @@ export class CvPreviewComponent {
     {
       title: 'Dynamic CV Geneator',
       description:
-        'A tool to optimize the tailoring of CVs to specific job offers, by providing a fast way of updating the user most relevant skills'
-    }
+        'A tool to optimize the tailoring of CVs to specific job offers, by providing a fast way of updating the user most relevant skills',
+    },
   ];
 
-  constructor(private cvService: CvService) {
+  constructor(
+    private cvService: CvService,
+    private pdfService: PdfConverterService,
+    private elementRef: ElementRef,
+    private renderer: Renderer2
+  ) {
     this.cvService.cvData.subscribe((data) => {
       this.skills = data.skills;
     });
   }
 
+  private extractComponentStyles(componentSelector: string): string {
+    let styles = '';
+
+    // Loop through all stylesheets in the document
+    Array.from(document.styleSheets).forEach((styleSheet: CSSStyleSheet) => {
+      try {
+        // Loop through each CSS rule
+        Array.from(styleSheet.cssRules).forEach((rule: CSSRule) => {
+          if (
+            rule instanceof CSSStyleRule &&
+            rule.selectorText.includes(componentSelector)
+          ) {
+            styles += rule.cssText + '\n';
+          }
+        });
+      } catch (error) {
+        // Some stylesheets might be restricted (e.g., third-party), so we catch and skip them
+        console.warn('Unable to access stylesheet:', styleSheet.href, error);
+      }
+    });
+
+    return styles;
+  }
+
   downloadPDF(): void {
-    const element = document.getElementById('cv-template'); // Target the CV container
-
-    if (element) {
-      element.style.fontSize = '14px'; // Adjust the size as needed
-
-      const doc = new jsPDF({
-        unit: 'px',
-        format: 'a4',
-        orientation: 'portrait',
-      });
-
-      const margin = 0; // Pixels
-      const pageWidth = doc.internal.pageSize.getWidth();
-
-      doc.html(element, {
-        x: margin,
-        y: margin,
-        width: pageWidth - margin * 2,
-        windowWidth: element.scrollWidth,
-        callback: () => {
-          // Restore original font size after rendering
-          element.style.fontSize = '';
-          doc.save('Generated-CV.pdf');
-        },
-      });
+    const element = document.getElementById('cv-template') as HTMLElement; // Target the CV container
+    if (!element) {
+      console.error('Element not found!');
+      return;
     }
+
+    const applyInlineStyles = (element: HTMLElement): void => {
+      const styles = window.getComputedStyle(element);
+      for (let i = 0; i < styles.length; i++) {
+        element.style.setProperty(
+          styles[i],
+          styles.getPropertyValue(styles[i])
+        );
+      }
+
+      Array.from(element.children).forEach((child) =>
+        applyInlineStyles(child as HTMLElement)
+      );
+    };
+
+    applyInlineStyles(element);
+
+    const componentSelector = 'cv-template'; // Update this to your component selector
+    const extractedStyles = `.cv-container {
+      font-family: Arial, sans-serif;
+      color: #333;
+      background: #f9f9f9;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .cv-header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .cv-header h1 {
+      font-size: 2em;
+      margin: 0;
+    }
+
+    .cv-header h2 {
+      font-size: 1.2em;
+      color: #666;
+      margin: 5px 0;
+    }
+
+    .cv-header p {
+      margin: 2px 0;
+    }
+
+    .cv-section {
+      margin-bottom: 20px;
+    }
+
+    .cv-section h3 {
+      font-size: 1.5em;
+      color: #000000;
+      margin-bottom: 10px;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 5px;
+    }
+
+    .skills-list, .languages-list {
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .skills-list li, .languages-list li {
+      background: #6d6d6d;
+      color: white;
+      padding: 5px 10px;
+      margin: 5px 5px;
+      border-radius: 5px;
+      display: inline-block;
+    }
+
+    .cv-section ul {
+      margin-top: 10px;
+    }
+
+    .cv-section h4 {
+      font-size: 1.2em;
+      margin: 5px 0;
+    }
+
+    .cv-section p {
+      margin: 5px 0;
+      color: #555;
+    }
+
+
+    .experience-item {
+      margin-bottom: 20px;
+    }
+
+    .experience-item ul {
+      list-style-type: disc;
+      padding-left: 20px;
+      margin: 10px 0;
+    }
+
+    .experience-item li {
+      margin-bottom: 5px;
+    }
+
+    /* Header Section */
+    .cv-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .profile-picture {
+      flex: 0 0 200px;
+      width: 200px;
+      height: 200px;
+      margin-right: 20px;
+      border-radius: 50%;
+      overflow: hidden;
+      background-color: #e0e0e0;
+    }
+
+    .profile-picture img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .personal-info {
+      flex: 0.7;
+    }
+
+    .personal-info h1 {
+      font-size: 2em;
+      margin: 0;
+    }
+
+    .personal-info h2 {
+      font-size: 1.2em;
+      color: #666;
+      margin: 5px 0;
+    }
+
+    .personal-info p {
+      margin: 2px 0;
+    }`
+
+    const styledHtml = `
+    <html>
+      <head>
+        <meta charset="UTF-8">
+        <style>${extractedStyles}</style>
+      </head>
+      <body>${element.outerHTML}</body>
+    </html>`;
+
+    console.log(styledHtml);
+    this.pdfService.generatePdf(styledHtml).subscribe({
+      next: (pdfBlob) => {
+        console.log(pdfBlob);
+        // Create a URL for the blob and trigger the download
+        const pdfUrl = URL.createObjectURL(pdfBlob);
+        const a = document.createElement('a');
+        a.href = pdfUrl;
+        a.download = 'generated.pdf';
+        a.click();
+        URL.revokeObjectURL(pdfUrl); // Clean up
+      },
+      error: (err) => {
+        console.error('Error generating PDF:', err);
+      },
+    });
   }
 }
