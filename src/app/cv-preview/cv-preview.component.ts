@@ -59,8 +59,8 @@ export class CvPreviewComponent {
     {
       title: 'Dynamic CV Geneator',
       description:
-        'A tool to optimize the tailoring of CVs to specific job offers, by providing a fast way of updating the user most relevant skills'
-    }
+        'A tool to optimize the tailoring of CVs to specific job offers, by providing a fast way of updating the user most relevant skills',
+    },
   ];
 
   constructor(private cvService: CvService) {
@@ -69,32 +69,109 @@ export class CvPreviewComponent {
     });
   }
 
-  downloadPDF(): void {
-    const element = document.getElementById('cv-template'); // Target the CV container
+  async downloadPDF() {
+    const doc = new jsPDF({
+      unit: 'px',
+      format: 'a4',
+      orientation: 'portrait',
+    });
 
-    if (element) {
-      element.style.fontSize = '14px'; // Adjust the size as needed
+    let offsetY = 10; // Starting Y position
 
-      const doc = new jsPDF({
-        unit: 'px',
-        format: 'a4',
-        orientation: 'portrait',
-      });
-
-      const margin = 0; // Pixels
-      const pageWidth = doc.internal.pageSize.getWidth();
-
-      doc.html(element, {
-        x: margin,
-        y: margin,
-        width: pageWidth - margin * 2,
-        windowWidth: element.scrollWidth,
+    // Helper function to add HTML content
+    const addHtmlToPdf = (
+      html: HTMLElement,
+      offsetY: number,
+      next?: () => void
+    ) => {
+      console.log('Html to add: ', html);
+      doc.html(html, {
+        x: 10,
+        y: offsetY,
+        html2canvas: {
+          scale: 0.5,
+        },
         callback: () => {
-          // Restore original font size after rendering
-          element.style.fontSize = '';
-          doc.save('Generated-CV.pdf');
+          const contentHeight = html.offsetHeight;
+          console.log('Content height added to PDF:', contentHeight);
+          offsetY += contentHeight + 10; // Update Y offset
+          if (next) {
+            next();
+          }
         },
       });
+    };
+
+    // Add horizontal list
+    const addHorizontalList = (
+      items: string[],
+      startX: number,
+      startY: number
+    ): number => {
+      const itemWidth = 50; // Width for each item
+      const itemHeight = 10; // Height for each item
+      const padding = 10; // Space between items
+      let currentX = startX;
+
+      items.forEach((item) => {
+        // Draw box
+        doc.rect(currentX, startY, itemWidth, itemHeight);
+        // Add text centered inside the box
+        doc.text(item, currentX + 5, startY + 7); // Slight padding for alignment
+        currentX += itemWidth + padding; // Move to the next position
+      });
+
+      return startY + itemHeight + 10; // Return the new Y position after the list
+    };
+    /*
+    // Add the first section
+    const section1 = document.getElementById('cv-template-2') as HTMLElement;
+    if (section1) {
+      addHtmlToPdf(section1, offsetY, () => {
+        // Add the second section
+        const section2 = document.getElementById('cv-template-1') as HTMLElement;
+        if (section2) {
+          addHtmlToPdf(section2, offsetY, () => {
+            // Add the programmatically generated list
+            doc.save('output.pdf');
+            const section3 = document.createElement('div');
+            section3.innerHTML = `<ul><li>Item 1</li><li>Item 2</li><li>Item 3</li></ul>`;
+            addHtmlToPdf(section3, offsetY, () => {
+              // Save the PDF after all sections are added
+            });
+          });
+        }
+      });
     }
+    */
+
+    const sections = ['cv-template-1', 'cv-template-2'];
+    for (const [index, id] of sections.entries()) {
+      const element = document.getElementById(id);
+
+      if (element) {
+        console.log('offset before html: ', offsetY, 'i:', index);
+
+        // Wrap `doc.html` in a Promise
+        await new Promise<void>((resolve) => {
+          doc.html(element, {
+            x: 10,
+            y: offsetY,
+            html2canvas: {
+              scale: 0.5,
+            },
+            callback: () => {
+              console.log('starting offset: ', offsetY, 'i:', index);
+              offsetY += element.offsetHeight / 2; // Adjust Y position after rendering
+              console.log('Added ', id, ' offset ', offsetY);
+              resolve(); // Resolve the Promise when the callback is complete
+            },
+          });
+        });
+      }
+    }
+
+    // Save the PDF after processing all sections
+    doc.save('dynamic-multiple-sections.pdf');
   }
 }
