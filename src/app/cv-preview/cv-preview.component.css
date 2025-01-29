@@ -5,11 +5,12 @@
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
 }
 
 .cv-header {
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
 .cv-header h1 {
@@ -28,13 +29,14 @@
 }
 
 .cv-section {
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
 .cv-section h3 {
   font-size: 1.5em;
   color: #000000;
   margin-bottom: 10px;
+  margin-top: 10px;
   border-bottom: 1px solid #ddd;
   padding-bottom: 5px;
 }
