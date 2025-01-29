@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CvService } from '../services/cv.service';
 import jsPDF from 'jspdf';
+import { ImageConverterService } from '../services/image-converter.service';
 
 @Component({
   selector: 'app-cv-preview',
@@ -8,25 +9,25 @@ import jsPDF from 'jspdf';
   styleUrls: ['./cv-preview.component.css'],
 })
 export class CvPreviewComponent {
+  profilePicBase64: string | null = null;
   skills: string[] = [];
+  softSkills: string[] = [
+    'Fast Learner',
+    'Team Player',
+    'Problem Solver',
+    'Flexible',
+    'Good Communication',
+  ];
   experiences = [
-    {
-      position: 'Amazon Delivery Driver',
-      company: 'PRB Logistik GmbH, Rammstein Germany',
-      date: 'October 2024 - December 2024',
-      details: [
-        'Delivered parcels to various locations throughout the delivery area.',
-        'Employed this time to improve my German language skills while communicating with customers.',
-      ],
-    },
     {
       position: 'Intern Software Engineer',
       company: 'Comlet GmbH, Zweibrucken Germany',
       date: 'March 2024 - August 2024',
       details: [
-        'ERASMUS exchange program for bachelor thesis.',
-        'Worked with embedded devices, including the electronics and software side of them, developing a tool for test automation.',
-        'Learned the benefits of CI/CD while developing the project.',
+        'Automated testing processes for embedded devices using Robot Framework, enabling continuous and repeatable testing without human intervention.',
+        'Designed and 3D-printed 8 functional prototypes, including fixtures and mounts, to support hardware development.',
+        'Programmed firmware for 3D printers (Marlin and OctoPrint) and integrated TMC2209 stepper drivers for enhanced performance.',
+        'Applied CI/CD pipelines to streamline deployment cycles and ensure consistent software updates.',
       ],
     },
     {
@@ -34,11 +35,21 @@ export class CvPreviewComponent {
       company: 'Evenbytes, Santander Spain',
       date: 'February 2023 - August 2023',
       details: [
-        'Full-stack web developer with Angular and NodeJS, working in Google Cloud Platform.',
-        'Developed a Gmail addon for automated invoice processing and data collection.',
-        'Developed a proof of concept system for managing access control devices.',
+        'Developed a Gmail Addon using Google Apps Script and OpenAI API to automatically process incoming invoices every 5 minutes, streamlining data entry.',
+        'Built a cloud-hosted access control system on Google Cloud Run with Firestore, supporting between 100 and 1,000 users.',
+        'Replaced legacy tools with a modernized system, halving development and configuration time.',
+        'Enhanced backend scalability, enabling seamless integration with multiple access control devices.',
       ],
     },
+    {
+      position: 'Amazon Delivery Driver',
+      company: 'PRB Logistik GmbH, Rammstein Germany',
+      date: 'October 2024 - December 2024',
+      details: [
+        'Delivered approximately 250 parcels daily with a 95% on-time delivery rate, ensuring high customer satisfaction.',
+        'Improved German language proficiency through daily interactions with a diverse customer base.',
+      ],
+    }
   ];
   languages: string[] = [
     'Spanish - Native',
@@ -49,24 +60,37 @@ export class CvPreviewComponent {
     {
       title: 'CAN and OBD reader for BMW',
       description:
-        'A HW and SW solution to read, analyze, and display parameters from the CAN bus and the Onboard Diagnostics Port.',
+        'Developed a Python-based tool for real-time monitoring of OBD and CAN systems, supporting up to 6 parameters. Created a web app using Angular and NodeJS for live data visualization, improving diagnostic efficiency by automating insights.',
     },
     {
-      title: 'Factory builder Unity game',
+      title: 'LogistiX: Factory Builder Unity Game',
       description:
-        'A simple Unity engine game for building automated production lines.',
+        'Designed a 3D factory automation game in Unity with C#, featuring 11 crafting recipes and 3 processing machines. Modeled assets in Blender to maintain cohesive game aesthetics.',
     },
     {
       title: 'Dynamic CV Geneator',
       description:
-        'A tool to optimize the tailoring of CVs to specific job offers, by providing a fast way of updating the user most relevant skills',
+        'Created a tool for efficiently customizing resumes to job descriptions, streamlining CV tailoring for users.This CV pdf was generated using the tool, you can find a live demo on my GitHub page',
     },
   ];
 
-  constructor(private cvService: CvService) {
+  constructor(
+    private cvService: CvService,
+    private imageConverterService: ImageConverterService
+  ) {
     this.cvService.cvData.subscribe((data) => {
       this.skills = data.skills;
     });
+    this.imageConverterService
+      .convertImageToBase64('assets/Profilepic.png')
+      .then(
+        (base64) => {
+          this.profilePicBase64 = base64;
+        },
+        (error) => {
+          console.error('Error converting image:', error);
+        }
+      );
   }
 
   async downloadPDF() {
@@ -76,31 +100,21 @@ export class CvPreviewComponent {
       orientation: 'portrait',
     });
 
-    let offsetY = 10; // Starting Y position
+    console.log('Available events:', doc.internal.events.getTopics());
 
-    // Helper function to add HTML content
-    const addHtmlToPdf = (
-      html: HTMLElement,
-      offsetY: number,
-      next?: () => void
-    ) => {
-      console.log('Html to add: ', html);
-      doc.html(html, {
-        x: 10,
-        y: offsetY,
-        html2canvas: {
-          scale: 0.5,
-        },
-        callback: () => {
-          const contentHeight = html.offsetHeight;
-          console.log('Content height added to PDF:', contentHeight);
-          offsetY += contentHeight + 10; // Update Y offset
-          if (next) {
-            next();
-          }
-        },
-      });
-    };
+    doc.internal.events.subscribe('addPage', () => {
+      console.log('A new page was added to the PDF');
+    });
+    doc.internal.events.subscribe('putPage', (page) => {
+      console.log('A new page was putted to the PDF', page);
+    });
+
+    doc.internal.events.subscribe('putResources', (resource) => {
+      console.log('Resource putted ', resource);
+    });
+
+    let offsetY = 10; // Starting Y position
+    const marginX = 15;
 
     // Add horizontal list
     const addHorizontalList = (
@@ -108,57 +122,107 @@ export class CvPreviewComponent {
       startX: number,
       startY: number
     ): number => {
-      const itemWidth = 50; // Width for each item
       const itemHeight = 10; // Height for each item
       const padding = 10; // Space between items
-      let currentX = startX;
+      const rectRoundess = 5;
+      let currentX = startX + padding / 2;
 
       items.forEach((item) => {
+        doc.setFillColor(100, 100, 100);
+        doc.setTextColor(255, 255, 255);
+        doc.setFontSize(12);
         // Draw box
-        doc.rect(currentX, startY, itemWidth, itemHeight);
+        doc.roundedRect(
+          currentX - padding / 2,
+          startY - padding,
+          doc.getTextWidth(item) + padding,
+          itemHeight + padding / 2,
+          rectRoundess,
+          rectRoundess,
+          'F'
+        );
         // Add text centered inside the box
-        doc.text(item, currentX + 5, startY + 7); // Slight padding for alignment
-        currentX += itemWidth + padding; // Move to the next position
+        doc.text(item, currentX, startY); // Slight padding for alignment
+        currentX += doc.getTextWidth(item) + padding * 1.5; // Move to the next position
       });
+      doc.setTextColor(0, 0, 0);
 
       return startY + itemHeight + 10; // Return the new Y position after the list
     };
-    /*
-    // Add the first section
-    const section1 = document.getElementById('cv-template-2') as HTMLElement;
-    if (section1) {
-      addHtmlToPdf(section1, offsetY, () => {
-        // Add the second section
-        const section2 = document.getElementById('cv-template-1') as HTMLElement;
-        if (section2) {
-          addHtmlToPdf(section2, offsetY, () => {
-            // Add the programmatically generated list
-            doc.save('output.pdf');
-            const section3 = document.createElement('div');
-            section3.innerHTML = `<ul><li>Item 1</li><li>Item 2</li><li>Item 3</li></ul>`;
-            addHtmlToPdf(section3, offsetY, () => {
-              // Save the PDF after all sections are added
-            });
-          });
-        }
-      });
-    }
-    */
 
-    const sections = ['cv-template-1', 'cv-template-2'];
+    const setHeader = (text: String) => {
+      doc.setFont('times', 'bold');
+      doc.setFontSize(16);
+      doc.text(text as string, marginX, offsetY);
+      offsetY += 7;
+      doc.setDrawColor('#ddd');
+      doc.line(
+        marginX,
+        offsetY,
+        doc.internal.pageSize.width - marginX,
+        offsetY
+      );
+      offsetY += 13;
+      doc.setFont('times', 'normal');
+      doc.setFontSize(12);
+    };
+
+    const setContact = () => {
+      doc.addImage(this.profilePicBase64 as string, 'PNG', marginX, offsetY, 80, 80); // (x, y, width, height)
+      offsetY +=20;
+      const tempXOffset = doc.internal.pageSize.getWidth() / 2;
+      // Set Font and Styles
+      doc.setFont('times', 'bold');
+      doc.setFontSize(18);
+      doc.text('Mario Pereda', tempXOffset, offsetY += 10, {align:"center"});
+
+      doc.setFontSize(14);
+      doc.setFont('times', 'italic');
+      doc.text('Junior Software Engineer', tempXOffset, offsetY += 10, {align:"center"});
+
+      doc.setFont('times', 'normal');
+      doc.setFontSize(12);
+
+      // Contact Info
+      doc.text('+49 1575 1916935', tempXOffset, offsetY += 10, {align:"center"});
+      doc.text('mario.pereda.08@gmail.com', tempXOffset, offsetY += 10, {align:"center"});
+      doc.text('Friedrichshafenerstr 24a, 70329, Stuttgart, Germany', tempXOffset, offsetY += 10, {align:"center"});
+
+      // Hyperlinks (LinkedIn & GitHub)
+      doc.setTextColor(0, 0, 255); // Blue color to indicate a link
+      doc.textWithLink('LinkedIn',tempXOffset - doc.getTextWidth('LinkedIn') - 10, offsetY += 10, {url: 'https://www.linkedin.com/in/mario-pereda-puyo-57061b253/'});
+
+      doc.textWithLink('GitHub',tempXOffset + 10, offsetY,{ url: 'https://github.com/MafioP' });
+    };
+
+    const sections = ['contact', 'cv-template-1', 'skills', 'cv-template-2'];
     for (const [index, id] of sections.entries()) {
+      if (id == 'contact') {
+        setContact();
+      }
+      if (id == 'skills') {
+        doc.addPage();
+        offsetY = 20;
+        setHeader('Skills');
+        offsetY = addHorizontalList(this.skills, marginX, offsetY);
+        offsetY = addHorizontalList(this.softSkills, marginX, offsetY);
+        console.log('Added Skills', id, ' offset ', offsetY);
+        setHeader('Languages');
+        offsetY = addHorizontalList(this.languages, marginX, offsetY);
+        console.log('Added Language ', id, ' offset ', offsetY);
+        offsetY = offsetY + doc.internal.pageSize.getHeight() - 15;
+      }
       const element = document.getElementById(id);
-
       if (element) {
         console.log('offset before html: ', offsetY, 'i:', index);
 
         // Wrap `doc.html` in a Promise
         await new Promise<void>((resolve) => {
           doc.html(element, {
-            x: 10,
+            x: marginX,
             y: offsetY,
             html2canvas: {
-              scale: 0.5,
+              scale: 0.55,
             },
             callback: () => {
               console.log('starting offset: ', offsetY, 'i:', index);
