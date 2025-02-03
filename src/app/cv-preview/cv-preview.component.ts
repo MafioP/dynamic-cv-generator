@@ -60,7 +60,7 @@ export class CvPreviewComponent {
 
     const height = clonedElement.offsetHeight; // Get height
     document.body.removeChild(clonedElement); // Remove after measuring
-
+    console.log("HTML Clone Height: ", height);
     return height;
   }
 
@@ -88,7 +88,7 @@ export class CvPreviewComponent {
       items.forEach((item) => {
         doc.setFillColor(100, 100, 100);
         doc.setTextColor(255, 255, 255);
-        doc.setFontSize(10);
+        doc.setFontSize(9);
         // Draw box
         doc.roundedRect(
           currentX - padding / 2,
@@ -105,14 +105,14 @@ export class CvPreviewComponent {
       });
       doc.setTextColor(0, 0, 0);
 
-      return startY + itemHeight; // Return the new Y position after the list
+      return startY + itemHeight + padding; // Return the new Y position after the list
     };
 
     const setHeader = (text: String) => {
       doc.setFont('G_ari_bd', 'bold');
       doc.setFontSize(12);
       doc.text(text as string, marginX, offsetY);
-      offsetY += 7;
+      offsetY += 3;
       doc.setDrawColor('#ddd');
       doc.line(
         marginX,
@@ -120,7 +120,7 @@ export class CvPreviewComponent {
         doc.internal.pageSize.width - marginX,
         offsetY
       );
-      offsetY += 13;
+      offsetY += 12;
       doc.setFont('arial', 'normal');
       doc.setFontSize(10);
     };
