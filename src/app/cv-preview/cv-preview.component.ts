@@ -74,6 +74,15 @@ export class CvPreviewComponent {
     let offsetY = 10; // Starting Y position
     const marginX = 15;
 
+    console.log(doc.internal.events.getTopics())
+    doc.getLineHeight()
+    doc.internal.events.subscribe("addPage", () => {
+      console.log("EVENT: New Page Added");
+    })
+    doc.internal.events.subscribe("postProcessText", (payload) => {
+      //console.log("EVENT: Text preprocessing ", payload);
+    })
+
     // Add horizontal list
     const addHorizontalList = (
       items: string[],
@@ -110,6 +119,8 @@ export class CvPreviewComponent {
 
     const setHeader = (text: String) => {
       doc.setFont('G_ari_bd', 'bold');
+      console.log("HEADER: page number", doc.getCurrentPageInfo().pageNumber)
+      doc.setPage(doc.getCurrentPageInfo().pageNumber);
       doc.setFontSize(12);
       doc.text(text as string, marginX, offsetY);
       offsetY += 3;
@@ -123,6 +134,7 @@ export class CvPreviewComponent {
       offsetY += 12;
       doc.setFont('arial', 'normal');
       doc.setFontSize(10);
+      return offsetY
     };
 
     const setContactInfo = (profileData: ContactDetails) => {
@@ -176,6 +188,7 @@ export class CvPreviewComponent {
       doc.textWithLink('GitHub', tempXOffset + 10, offsetY, {
         url: 'https://github.com/MafioP',
       });
+      //offsetY += doc.internal.pageSize.getHeight() * (doc.getCurrentPageInfo().pageNumber - 1)
     };
 
     const applyStyles = (element: HTMLElement): HTMLElement => {
@@ -203,15 +216,19 @@ export class CvPreviewComponent {
           setContactInfo(langData.contactDetails);
         }
         if (id === 'skills') {
+          // console.log("SKILLS: initial offset ", offsetY);
+          // console.log("PAGE SIZE: ", doc.internal.pageSize.getHeight() , "index " ,langIndex);
+          //nudge the y offset
+          offsetY += 10 * (doc.getCurrentPageInfo().pageNumber - 1)
           console.log("skills starting offset: ", offsetY);
           //offsetY = 20;
-          setHeader('Skills');
+          offsetY = setHeader('Skills');
           offsetY = addHorizontalList(this.skills, marginX, offsetY);
           offsetY = addHorizontalList(langData.softSkills, marginX, offsetY);
-          console.log('Added Skills', id, 'offset', offsetY);
-          setHeader('Languages');
+          // console.log('Added Skills', id, 'offset', offsetY);
+          offsetY = setHeader('Languages');
           offsetY = addHorizontalList(langData.languages, marginX, offsetY);
-          console.log('Added Language', id, 'offset', offsetY);
+          // console.log('Added Language', id, 'offset', offsetY);
           //offsetY += doc.internal.pageSize.getHeight() - 15;
         }
 
@@ -219,24 +236,25 @@ export class CvPreviewComponent {
           .getElementsByClassName(id)
           .item(langIndex) as HTMLElement;
         if (element) {
-          console.log('Offset before html:', offsetY, 'i:', index);
-          console.log('HTML: ', element);
-          console.log(
-            '[ELEMENT]Current page' + doc.getCurrentPageInfo().pageNumber
-          );
+          // console.log('Offset before html:', offsetY, 'i:', index);
+          // console.log('HTML: ', element);
           const cloneElement = applyStyles(element);
           // Wait for doc.html() to finish before proceeding
+          console.log("PAGE: " + doc.getCurrentPageInfo().pageNumber);
+          //doc.setPage(langIndex + 1);
           await new Promise<void>((resolve) => {
             doc.html(cloneElement, {
               x: marginX,
-              y: offsetY + doc.internal.pageSize.getHeight() * (langIndex * 2),
+              y: offsetY + doc.internal.pageSize.getHeight() * (doc.getCurrentPageInfo().pageNumber - 1),
               html2canvas: {
+                logging: false,
                 scale: 0.55,
                 useCORS: true
                },
+               autoPaging: "text",
               callback: () => {
-                console.log('Starting offset:', offsetY, 'i:', index);
-                offsetY += this.getClonedElementHeight(cloneElement)/2.7;
+                console.log('HTML Starting offset:', offsetY, 'i:', index);
+                offsetY += Math.floor(this.getClonedElementHeight(cloneElement)/2.7) ;
                 console.log('Added', id, 'offset', offsetY);
                 resolve(); // Ensure the loop waits for this step
               },
@@ -246,7 +264,7 @@ export class CvPreviewComponent {
       }
       if (langIndex < this.profileData.length - 1) {
         doc.addPage();
-        offsetY = 20;
+        offsetY = 10;
         console.log('New page from loop end');
       }
     }
