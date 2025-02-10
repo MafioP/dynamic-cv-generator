@@ -5,6 +5,8 @@ import { ImageConverterService } from '../services/image-converter.service';
 import { ResumeData, ContactDetails } from '../interfaces/profile';
 import * as enData from '../../assets/content-en.json';
 import * as deData from '../../assets/content-de.json';
+import '../../assets/arial-normal'
+import '../../assets/G_ari_bd-bold'
 
 @Component({
   selector: 'app-cv-preview',
@@ -71,17 +73,18 @@ export class CvPreviewComponent {
       orientation: 'portrait',
     });
     console.log(doc.getFontList());
+    const defaultFont = doc.getFont();
     let offsetY = 10; // Starting Y position
     const marginX = 15;
 
-    console.log(doc.internal.events.getTopics())
-    doc.getLineHeight()
-    doc.internal.events.subscribe("addPage", () => {
-      console.log("EVENT: New Page Added");
-    })
-    doc.internal.events.subscribe("postProcessText", (payload) => {
-      //console.log("EVENT: Text preprocessing ", payload);
-    })
+    // console.log(doc.internal.events.getTopics())
+    // doc.getLineHeight()
+    // doc.internal.events.subscribe("addPage", () => {
+    //   console.log("EVENT: New Page Added");
+    // })
+    // doc.internal.events.subscribe("postProcessText", (payload) => {
+    //   //console.log("EVENT: Text preprocessing ", payload);
+    // })
 
     // Add horizontal list
     const addHorizontalList = (
@@ -118,7 +121,7 @@ export class CvPreviewComponent {
     };
 
     const setHeader = (text: String) => {
-      doc.setFont('G_ari_bd', 'bold');
+      doc.setFont('arial', 'bold');
       console.log("HEADER: page number", doc.getCurrentPageInfo().pageNumber)
       doc.setPage(doc.getCurrentPageInfo().pageNumber);
       doc.setFontSize(12);
@@ -129,7 +132,7 @@ export class CvPreviewComponent {
         marginX,
         offsetY,
         doc.internal.pageSize.width - marginX,
-        offsetY
+        offsetY+1
       );
       offsetY += 12;
       doc.setFont('arial', 'normal');
@@ -144,26 +147,28 @@ export class CvPreviewComponent {
         'PNG',
         marginX,
         offsetY,
-        80,
-        80
+        70,
+        70
       ); // (x, y, width, height)
-      offsetY += 20;
+      offsetY += 5;
       const tempXOffset = doc.internal.pageSize.getWidth() / 2;
       // Set Font and Styles
-      doc.setFont('G_ari_bd', 'bold');
+      doc.setFont('arial', 'bold');
       doc.setFontSize(18);
-      doc.text(profileData.name, tempXOffset, (offsetY += 10), {
+      doc.text(profileData.name, tempXOffset, (offsetY += 12), {
         align: 'center',
       });
 
-      doc.setFontSize(14);
+      doc.setFontSize(12);
+      doc.setTextColor("#222");
       doc.setFont('arial', 'normal');
       doc.text(profileData.title, tempXOffset, (offsetY += 10), {
         align: 'center',
       });
 
+      doc.setTextColor("#000");
       doc.setFont('arial', 'normal');
-      doc.setFontSize(12);
+      doc.setFontSize(10);
 
       // Contact Info
       doc.text(profileData.phoneNumber, tempXOffset, (offsetY += 10), {
@@ -201,14 +206,13 @@ export class CvPreviewComponent {
       });
 
       //additional properties
-      clonedElement.style.fontSize = "x-small";
+      clonedElement.style.fontSize = "72%";
       clonedElement.style.fontFamily = "Arial, sans-serif";
 
-      doc.setFont("times","normal");
       return clonedElement;
     };
 
-    const sections = ['contact', 'cv-template-1', 'skills', 'cv-template-2'];
+    const sections = ['contact', 'cv-template-1', 'skills', 'cv-template-2', 'other'];
 
     for (const [langIndex, langData] of this.profileData.entries()) {
       for (const [index, id] of sections.entries()) {
@@ -219,7 +223,7 @@ export class CvPreviewComponent {
           // console.log("SKILLS: initial offset ", offsetY);
           // console.log("PAGE SIZE: ", doc.internal.pageSize.getHeight() , "index " ,langIndex);
           //nudge the y offset
-          offsetY += 10 * (doc.getCurrentPageInfo().pageNumber - 1)
+          offsetY += 5 + 10 * (doc.getCurrentPageInfo().pageNumber - 1);
           console.log("skills starting offset: ", offsetY);
           //offsetY = 20;
           offsetY = setHeader('Skills');
@@ -229,7 +233,12 @@ export class CvPreviewComponent {
           offsetY = setHeader('Languages');
           offsetY = addHorizontalList(langData.languages, marginX, offsetY);
           // console.log('Added Language', id, 'offset', offsetY);
-          //offsetY += doc.internal.pageSize.getHeight() - 15;
+          offsetY -= 10;
+        }
+        if (id === 'other') {
+          offsetY += 10 + 8 * (doc.getCurrentPageInfo().pageNumber - 1);
+          offsetY = setHeader('Other');
+          offsetY = addHorizontalList(langData.other, marginX, offsetY);
         }
 
         const element = document
@@ -254,7 +263,7 @@ export class CvPreviewComponent {
                autoPaging: "text",
               callback: () => {
                 console.log('HTML Starting offset:', offsetY, 'i:', index);
-                offsetY += Math.floor(this.getClonedElementHeight(cloneElement)/2.7) ;
+                offsetY += Math.floor(this.getClonedElementHeight(cloneElement)/2.5) ;
                 console.log('Added', id, 'offset', offsetY);
                 resolve(); // Ensure the loop waits for this step
               },

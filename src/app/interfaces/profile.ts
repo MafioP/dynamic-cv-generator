@@ -37,4 +37,5 @@ export interface ResumeData {
   education: Education;
   languages: string[];
   softSkills: string[];
+  other: string[];
 }
