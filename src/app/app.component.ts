@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
+import { CvPreviewComponent } from './cv-preview/cv-preview.component';
 
 @Component({
   selector: 'app-root',
@@ -7,4 +8,16 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'dynamic-cv-generator';
+
+  currentLanguages: string[] = ['de', 'en'];
+
+  updateLanguages(languages: string[]) {
+    this.currentLanguages = languages;
+  }
+
+  @ViewChild(CvPreviewComponent) cvPreview!: CvPreviewComponent;
+
+  callDownloadPdf() {
+    this.cvPreview.downloadPDF();
+  }
 }

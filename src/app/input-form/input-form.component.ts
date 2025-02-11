@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output, ViewChild } from '@angular/core';
 import { CvService } from '../services/cv.service';
+
 
 @Component({
   selector: 'app-input-form',
@@ -13,7 +14,22 @@ export class InputFormComponent {
   selectedSkills: string[] = [];
   newSkill: string = '';
 
+  @Output() languageChange = new EventEmitter<string[]>(); // Emit an array of selected languages
+
+  selectedLanguages = { de: true, en: true };
+
+  @Output() downloadPDF = new EventEmitter<void>();
+
+  emitDownloadPdf() {
+    this.downloadPDF.emit();
+  }
+
   constructor(private cvService: CvService) {}
+
+  onLanguageChange(): void {
+    const activeLanguages = Object.keys(this.selectedLanguages).filter(lang => this.selectedLanguages[lang]);
+    this.languageChange.emit(activeLanguages);
+  }
 
   toggleSkill(skill: string): void {
     if (this.selectedSkills.includes(skill)) {

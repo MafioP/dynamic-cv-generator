@@ -1,4 +1,3 @@
-<button (click)="downloadPDF()">Download as PDF</button>
 <div *ngFor="let data of profileData">
     <div id="cv-template" class="cv-container">
     <!-- Personal Information -->
@@ -20,11 +19,11 @@
     </header>
 
     <div class="cv-template-1">
-      <!-- About Me -->
+      <!-- About Me
       <section class="cv-section">
         <h3>About</h3>
         <p>{{data.about}}</p>
-      </section>
+      </section> -->
 
       <!-- Professional Experience -->
       <section class="cv-section">
@@ -78,6 +77,12 @@
         </div>
       </section>
     </div>
+      <section class="cv-section">
+        <h3>Extra Information</h3>
+        <ul class="languages-list">
+          <li *ngFor="let other of data.other">{{ other }}</li>
+        </ul>
+      </section>
   </div>
 </div>
 

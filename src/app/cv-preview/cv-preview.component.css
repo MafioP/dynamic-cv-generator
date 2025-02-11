@@ -7,6 +7,9 @@
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   margin-bottom: 20px;
 }
+#cv-template-1 #cv-template-2 {
+  font-family: Arial, sans-serif;
+}
 
 .cv-header {
   text-align: center;
@@ -37,7 +40,7 @@
   color: #000000;
   margin-bottom: 10px;
   margin-top: 10px;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 2px solid #ddd;
   padding-bottom: 5px;
 }
 
@@ -71,10 +74,6 @@
 }
 
 
-.experience-item {
-  margin-bottom: 20px;
-}
-
 .experience-item ul {
   list-style-type: disc;
   padding-left: 20px;
@@ -89,7 +88,7 @@
 .cv-header {
   display: flex;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
 .profile-picture {

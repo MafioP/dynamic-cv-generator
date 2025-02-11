@@ -1,22 +1,30 @@
-import { Component } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { CvService } from '../services/cv.service';
 import jsPDF from 'jspdf';
 import { ImageConverterService } from '../services/image-converter.service';
 import { ResumeData, ContactDetails } from '../interfaces/profile';
 import * as enData from '../../assets/content-en.json';
 import * as deData from '../../assets/content-de.json';
+import '../../assets/arial-normal'
+import '../../assets/G_ari_bd-bold'
 
 @Component({
   selector: 'app-cv-preview',
   templateUrl: './cv-preview.component.html',
   styleUrls: ['./cv-preview.component.css'],
 })
-export class CvPreviewComponent {
-  profileData = [deData,enData];
+export class CvPreviewComponent implements OnChanges{
+  profileData = [deData, enData];
   profilePicBase64: string | null = null;
   skills: string[] = [];
 
-  constructor(private cvService: CvService) {
+  @Input() selectedLanguages: string[] = ['de', 'en'];
+
+
+  constructor(
+    private cvService: CvService,
+    private imageConverterService: ImageConverterService
+  ) {
     this.cvService.cvData.subscribe((data) => {
       this.skills = data.skills;
     });
@@ -31,6 +39,38 @@ export class CvPreviewComponent {
         }
       );
   }
+  ngOnChanges(): void {
+    this.profileData = this.selectedLanguages.map(lang => (lang === 'de' ? deData : enData));
+  }
+
+  getComputedStyles(element: HTMLElement): Record<string, string> {
+    const computedStyle = window.getComputedStyle(element);
+    const styles: Record<string, string> = {};
+
+    // Copy only necessary properties
+    for (let i = 0; i < computedStyle.length; i++) {
+      const property = computedStyle[i];
+      styles[property] = computedStyle.getPropertyValue(property);
+    }
+
+    return styles;
+  }
+
+  getClonedElementHeight(element: HTMLElement): number {
+    const clonedElement = element.cloneNode(true) as HTMLElement;
+
+    // Apply absolute positioning to avoid layout issues
+    clonedElement.style.position = "absolute";
+    clonedElement.style.visibility = "hidden";
+    clonedElement.style.left = "-9999px";
+
+    document.body.appendChild(clonedElement); // Add to DOM
+
+    const height = clonedElement.offsetHeight; // Get height
+    document.body.removeChild(clonedElement); // Remove after measuring
+    console.log("HTML Clone Height: ", height);
+    return height;
+  }
 
   async downloadPDF() {
     const doc = new jsPDF({
@@ -38,9 +78,19 @@ export class CvPreviewComponent {
       format: 'a4',
       orientation: 'portrait',
     });
-
+    console.log(doc.getFontList());
+    const defaultFont = doc.getFont();
     let offsetY = 10; // Starting Y position
     const marginX = 15;
+
+    // console.log(doc.internal.events.getTopics())
+    // doc.getLineHeight()
+    // doc.internal.events.subscribe("addPage", () => {
+    //   console.log("EVENT: New Page Added");
+    // })
+    // doc.internal.events.subscribe("postProcessText", (payload) => {
+    //   //console.log("EVENT: Text preprocessing ", payload);
+    // })
 
     // Add horizontal list
     const addHorizontalList = (
@@ -48,15 +98,15 @@ export class CvPreviewComponent {
       startX: number,
       startY: number
     ): number => {
-      const itemHeight = 10; // Height for each item
-      const padding = 10; // Space between items
+      const itemHeight = 8; // Height for each item
+      const padding = 8; // Space between items
       const rectRoundess = 5;
       let currentX = startX + padding / 2;
-      console.log("Adding skills");
+      console.log('Adding skills');
       items.forEach((item) => {
         doc.setFillColor(100, 100, 100);
         doc.setTextColor(255, 255, 255);
-        doc.setFontSize(12);
+        doc.setFontSize(9);
         // Draw box
         doc.roundedRect(
           currentX - padding / 2,
@@ -73,53 +123,58 @@ export class CvPreviewComponent {
       });
       doc.setTextColor(0, 0, 0);
 
-      return startY + itemHeight + 10; // Return the new Y position after the list
+      return startY + itemHeight + padding; // Return the new Y position after the list
     };
 
     const setHeader = (text: String) => {
-      doc.setFont('times', 'bold');
-      doc.setFontSize(16);
+      doc.setFont('arial', 'bold');
+      console.log("HEADER: page number", doc.getCurrentPageInfo().pageNumber)
+      doc.setPage(doc.getCurrentPageInfo().pageNumber);
+      doc.setFontSize(12);
       doc.text(text as string, marginX, offsetY);
-      offsetY += 7;
+      offsetY += 3;
       doc.setDrawColor('#ddd');
       doc.line(
         marginX,
         offsetY,
         doc.internal.pageSize.width - marginX,
-        offsetY
+        offsetY+1
       );
-      offsetY += 13;
-      doc.setFont('times', 'normal');
-      doc.setFontSize(12);
+      offsetY += 12;
+      doc.setFont('arial', 'normal');
+      doc.setFontSize(10);
+      return offsetY
     };
 
     const setContactInfo = (profileData: ContactDetails) => {
-      console.log("Setting contact info ", profileData);
+      console.log('Setting contact info ', profileData);
       doc.addImage(
         this.profilePicBase64 as string,
         'PNG',
         marginX,
         offsetY,
-        80,
-        80
+        70,
+        70
       ); // (x, y, width, height)
-      offsetY += 20;
+      offsetY += 5;
       const tempXOffset = doc.internal.pageSize.getWidth() / 2;
       // Set Font and Styles
-      doc.setFont('times', 'bold');
+      doc.setFont('arial', 'bold');
       doc.setFontSize(18);
-      doc.text(profileData.name, tempXOffset, (offsetY += 10), {
+      doc.text(profileData.name, tempXOffset, (offsetY += 12), {
         align: 'center',
       });
 
-      doc.setFontSize(14);
-      doc.setFont('times', 'italic');
+      doc.setFontSize(12);
+      doc.setTextColor("#222");
+      doc.setFont('arial', 'normal');
       doc.text(profileData.title, tempXOffset, (offsetY += 10), {
         align: 'center',
       });
 
-      doc.setFont('times', 'normal');
-      doc.setFontSize(12);
+      doc.setTextColor("#000");
+      doc.setFont('arial', 'normal');
+      doc.setFontSize(10);
 
       // Contact Info
       doc.text(profileData.phoneNumber, tempXOffset, (offsetY += 10), {
@@ -144,58 +199,94 @@ export class CvPreviewComponent {
       doc.textWithLink('GitHub', tempXOffset + 10, offsetY, {
         url: 'https://github.com/MafioP',
       });
+      //offsetY += doc.internal.pageSize.getHeight() * (doc.getCurrentPageInfo().pageNumber - 1)
     };
 
-    const sections = ['contact', 'cv-template-1', 'skills', 'cv-template-2'];
+    const applyStyles = (element: HTMLElement): HTMLElement => {
+      const clonedElement = element.cloneNode(true) as HTMLElement;
 
-      for (const [langIndex, langData] of this.profileData.entries()) {
-        for (const [index, id] of sections.entries()) {
-          if (id === 'contact') {
-            setContactInfo(langData.contactDetails);
-          }
-          if (id === 'skills') {
-            console.log("[SKILLS (before addpage)]Current page" + doc.getCurrentPageInfo().pageNumber);
-            doc.addPage();
-            console.log("[SKILLS (after addpage)]Current page" + doc.getCurrentPageInfo().pageNumber);
-            offsetY = 20;
-            setHeader('Skills');
-            offsetY = addHorizontalList(this.skills, marginX, offsetY);
-            offsetY = addHorizontalList(langData.softSkills, marginX, offsetY);
-            console.log('Added Skills', id, 'offset', offsetY);
-            setHeader('Languages');
-            offsetY = addHorizontalList(langData.languages, marginX, offsetY);
-            console.log('Added Language', id, 'offset', offsetY);
-            offsetY += doc.internal.pageSize.getHeight() - 15;
-          }
+      const stylesheetStyles = this.getComputedStyles(element);
 
-          const element = document.getElementsByClassName(id).item(langIndex) as HTMLElement;
-          if (element) {
-            console.log('Offset before html:', offsetY, 'i:', index);
-            console.log("HTML: ",element);
-            console.log("[ELEMENT]Current page" + doc.getCurrentPageInfo().pageNumber);
+      Object.entries(stylesheetStyles).forEach(([property, value]) => {
+        clonedElement.style.setProperty(property, value);
+      });
 
-            // Wait for doc.html() to finish before proceeding
-            await new Promise<void>((resolve) => {
-              doc.html(element, {
-                x: marginX,
-                y: offsetY + doc.internal.pageSize.getHeight() * (langIndex*2),
-                html2canvas: { scale: 0.55 },
-                callback: () => {
-                  console.log('Starting offset:', offsetY, 'i:', index);
-                  offsetY += element.offsetHeight / 2;
-                  console.log('Added', id, 'offset', offsetY);
-                  resolve(); // Ensure the loop waits for this step
-                },
-              });
-            });
-          }
+      //additional properties
+      clonedElement.style.fontSize = "72%";
+      clonedElement.style.fontFamily = "Arial, sans-serif";
+
+      return clonedElement;
+    };
+
+    const sections = ['contact', 'cv-template-1', 'skills', 'cv-template-2', 'other'];
+
+    for (const [langIndex, langData] of this.profileData.entries()) {
+      for (const [index, id] of sections.entries()) {
+        if (id === 'contact') {
+          setContactInfo(langData.contactDetails);
         }
-        if (langIndex < this.profileData.length-1){
-          doc.addPage();
-          offsetY = 20;
-          console.log("New page from loop end");
+        if (id === 'skills') {
+          // console.log("SKILLS: initial offset ", offsetY);
+          // console.log("PAGE SIZE: ", doc.internal.pageSize.getHeight() , "index " ,langIndex);
+          //nudge the y offset
+          offsetY += 5 + 15 * (doc.getCurrentPageInfo().pageNumber - 1);
+          console.log("skills starting offset: ", offsetY);
+          //offsetY = 20;
+          offsetY = setHeader('Skills');
+          offsetY = addHorizontalList(this.skills, marginX, offsetY);
+          offsetY = addHorizontalList(langData.softSkills, marginX, offsetY);
+          // console.log('Added Skills', id, 'offset', offsetY);
+          offsetY = setHeader('Languages');
+          offsetY = addHorizontalList(langData.languages, marginX, offsetY);
+          // console.log('Added Language', id, 'offset', offsetY);
+          offsetY -= 10;
+        }
+        if (id === 'other') {
+          offsetY += 10 + 8 * (doc.getCurrentPageInfo().pageNumber - 1);
+          offsetY = setHeader('Other');
+          offsetY = addHorizontalList(langData.other, marginX, offsetY);
+        }
+
+        const element = document
+          .getElementsByClassName(id)
+          .item(langIndex) as HTMLElement;
+        if (element) {
+          // console.log('Offset before html:', offsetY, 'i:', index);
+          // console.log('HTML: ', element);
+          const cloneElement = applyStyles(element);
+          // Wait for doc.html() to finish before proceeding
+          console.log("PAGE: " + doc.getCurrentPageInfo().pageNumber);
+          //doc.setPage(langIndex + 1);
+          await new Promise<void>((resolve) => {
+            doc.html(cloneElement, {
+              x: marginX,
+              y: offsetY + doc.internal.pageSize.getHeight() * (doc.getCurrentPageInfo().pageNumber - 1),
+              html2canvas: {
+                logging: false,
+                scale: 0.55,
+                useCORS: true
+               },
+               autoPaging: "text",
+              callback: () => {
+                console.log('HTML Starting offset:', offsetY, 'i:', index);
+                if (this.selectedLanguages[0].match('en')){
+                  offsetY += Math.floor(this.getClonedElementHeight(cloneElement)/2.35) ;
+                } else {
+                  offsetY += Math.floor(this.getClonedElementHeight(cloneElement)/2.5) ;
+                }
+                console.log('Added', id, 'offset', offsetY);
+                resolve(); // Ensure the loop waits for this step
+              },
+            });
+          });
         }
       }
+      if (langIndex < this.profileData.length - 1) {
+        doc.addPage();
+        offsetY = 10;
+        console.log('New page from loop end');
+      }
+    }
     // Save the PDF after processing all sections
     doc.save('dynamic-multiple-sections.pdf');
   }
