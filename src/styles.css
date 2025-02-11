@@ -1,6 +1,7 @@
-.container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 20px;
+body, html {
+  display: flex;
+  align-items: center;
+  min-width: 800px;
+  margin: auto;
   font-family: Arial, sans-serif;
 }

@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
+import { CvPreviewComponent } from './cv-preview/cv-preview.component';
 
 @Component({
   selector: 'app-root',
@@ -12,5 +13,11 @@ export class AppComponent {
 
   updateLanguages(languages: string[]) {
     this.currentLanguages = languages;
+  }
+
+  @ViewChild(CvPreviewComponent) cvPreview!: CvPreviewComponent;
+
+  callDownloadPdf() {
+    this.cvPreview.downloadPDF();
   }
 }

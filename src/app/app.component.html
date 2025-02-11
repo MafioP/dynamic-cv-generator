@@ -1,5 +1,10 @@
 <div class="container">
-  <h1>Dynamic CV Generator</h1>
-  <app-input-form (languageChange)="updateLanguages($event)"></app-input-form>
-  <app-cv-preview [selectedLanguages]="currentLanguages"></app-cv-preview>
+  <div class="input-section">
+    <h1>Dynamic CV Generator</h1>
+    <app-input-form (downloadPDF)="callDownloadPdf()" (languageChange)="updateLanguages($event)"></app-input-form>
+  </div>
+  <div class="preview-section">
+    <h2>CV Preview</h2>
+    <app-cv-preview [selectedLanguages]="currentLanguages"></app-cv-preview>
+  </div>
 </div>

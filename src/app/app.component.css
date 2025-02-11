@@ -1,0 +1,27 @@
+.container {
+  display: flex;
+  align-self: center;
+  height: 100%; /* Full height */
+  width: 100%;
+  margin: 0;
+}
+
+.input-section,
+.preview-section {
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.input-section {
+  min-width: 300px;
+  max-width: 400px;
+  margin-left: 0;
+  flex-grow: 1
+}
+
+.preview-section {
+  background-color: white;
+  min-width: 50rem;
+  max-width: 60rem;
+  flex-grow: 2;
+}

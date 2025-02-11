@@ -19,7 +19,7 @@
     <button type="button" (click)="addSkill()">Add</button>
   </div>
 </div>
-<div>
+<div class="selectLanguages">
   <h3>Select CV Languages</h3>
   <label>
     <input type="checkbox" [(ngModel)]="selectedLanguages.de" (change)="onLanguageChange()"> German
@@ -27,4 +27,7 @@
   <label>
     <input type="checkbox" [(ngModel)]="selectedLanguages.en" (change)="onLanguageChange()"> English
   </label>
+</div>
+<div>
+  <button (click)="emitDownloadPdf()">Download PDF</button>
 </div>

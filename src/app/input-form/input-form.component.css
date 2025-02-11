@@ -39,7 +39,11 @@
   font-size: 14px;
 }
 
-.add-skill button {
+.selectLanguages {
+  margin-bottom: 10px;
+}
+
+button {
   padding: 5px 15px;
   background-color: #007bff;
   color: white;
@@ -49,6 +53,6 @@
   font-size: 14px;
 }
 
-.add-skill button:hover {
+button:hover {
   background-color: #0056b3;
 }
