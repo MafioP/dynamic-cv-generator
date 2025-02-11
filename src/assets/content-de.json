@@ -1,0 +1,79 @@
+{
+  "contactDetails": {
+    "name": "Mario Pereda",
+    "title": "SoftwareEntwickler",
+    "phoneNumber": "+49 1575 1916935",
+    "gmailAddress": "mario.pereda.08@gmail.com",
+    "livingAddress": "Stuttgart, Germany"
+  },
+  "about": "Ein Junior Software Engineer mit praktischer Erfahrung in Java, TypeScript/JavaScript, Python und Angular, der diese Fähigkeiten in verschiedenen Rollen angewendet hat, einschließlich der Automatisierung von Testprozessen für Embedded-Geräte und der Programmierung von Firmware für 3D-Drucker. Entwickelte ein Gmail-Addon mit Google Apps Script und integrierte die OpenAI API zur Automatisierung der Rechnungsverarbeitung. Trug auch zu cloudbasierten Systemen bei, indem skalierbare Zugangskontrollsysteme auf Google Cloud aufgebaut wurden. Bestrebt, meine Fähigkeiten weiter auszubauen und neue Herausforderungen in Bereichen wie Automobilindustrie, Embedded-Systeme oder Webentwicklung anzunehmen.",
+
+  "experiences": [
+    {
+      "position": "Praktikant Softwareentwickler",
+      "company": "Comlet GmbH, Zweibrücken, Deutschland",
+      "date": "März 2024 - August 2024",
+      "details": [
+        "Entwicklung eines neuen Hardware-Testtools für eingebettete Systeme auf Basis von Robot Framework, das kontinuierliche und wiederholbare Tests ohne menschliches Eingreifen ermöglicht.",
+        "Firmware für 3D-Drucker (Marlin und OctoPrint) programmiert und TMC2209-Schrittmotortreiber für verbesserte Leistung integriert.",
+        "Entwurf und 3D-Druck von 8 funktionalen Prototypen, einschließlich Halterungen und Befestigungen zur Unterstützung der Hardware-Entwicklung.",
+        "Anwendung von CI/CD-Pipelines zur Optimierung von Bereitstellungszyklen und zur Gewährleistung konsistenter Software-Updates."
+      ]
+    },
+    {
+      "position": "Praktikant Softwareentwickler",
+      "company": "Evenbytes, Santander, Spanien",
+      "date": "Februar 2023 - August 2023",
+      "details": [
+        "Entwicklung eines Gmail-Addons mit Google Apps Script und OpenAI API zur automatischen Verarbeitung eingehender Rechnungen alle 5 Minuten, wodurch die Dateneingabe optimiert wurde.",
+        "Entwicklung eines cloudbasierten Zugangskontrollsystems auf Google Cloud Run mit Firestore zur Unterstützung von rund 1.000 Nutzern mit der Möglichkeit zur Skalierung auf eine größere Nutzeranzahl.",
+        "Ersetzung veralteter Tools durch ein modernes System, wodurch sich die Entwicklungs- und Konfigurationszeit halbierte.",
+        "Verbesserung der Backend-Skalierbarkeit und nahtlose Integration mit mehreren Zugangskontrollgeräten ermöglicht."
+      ]
+    },
+    {
+      "position": "Amazon Lieferfahrer",
+      "company": "PRB Logistik GmbH, Ramstein, Deutschland",
+      "date": "Oktober 2024 - Dezember 2024",
+      "details": [
+        "Tägliche Zustellung von ca. 250 Paketen mit einer pünktlichen Lieferquote von 95 %, um eine hohe Kundenzufriedenheit sicherzustellen.",
+        "Verbesserung der Deutschkenntnisse durch tägliche Interaktionen mit einer vielfältigen Kundschaft."
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "title": "CAN and OBD reader for BMW",
+      "description": "Entwickelte ein Python-basiertes Tool zur Echtzeitüberwachung von OBD- und CAN-Systemen, das bis zu 6 Parameter unterstützt. Erstellte eine Webanwendung mit Angular und NodeJS für die Live-Datenvisualisierung, wodurch die Diagnoseeffizienz durch automatisierte Einblicke verbessert wurde."
+    },
+    {
+      "title": "LogistiX: Factory Builder Unity Game",
+      "description": "Entwarf ein 3D-Factory-Automatisierungsspiel in Unity mit C#, das 11 Handwerksrezepte und 3 Verarbeitungseinheiten enthält. Modellierte Assets in Blender, um eine kohärente Spielästhetik beizubehalten."
+    },
+    {
+      "title": "Dynamic CV Generator",
+      "description": "Erstellte ein Tool zur effizienten Anpassung von Lebensläufen an Stellenanzeigen, das die CV-Anpassung für Benutzer vereinfacht. Dieser CV-PDF wurde mit dem Tool generiert, eine Live-Demo finden Sie auf meiner GitHub-Seite."
+    }
+  ],
+  "education": {
+    "degree": "Bachelor in Informatik",
+    "university": "Universität Valladolid, Spanien",
+    "graduation_date": "Abschluss im August 2024"
+  },
+  "languages": [
+    "Spanish - Native",
+    "English - Advanced",
+    "German - Beginner (A1)"
+  ],
+  "softSkills": [
+    "Fast Learner",
+    "Team Player",
+    "Problem Solver",
+    "Flexible",
+    "Good Communication"
+  ],
+  "other": [
+    "Fuhrerschein B Class",
+    "Jetzt verfügbar"
+  ]
+}

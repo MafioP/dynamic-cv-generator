@@ -1,0 +1,79 @@
+{
+  "contactDetails": {
+    "name": "Mario Pereda",
+    "title": "Software Engineer",
+    "phoneNumber": "+49 1575 1916935",
+    "gmailAddress": "mario.pereda.08@gmail.com",
+    "livingAddress": "Stuttgart, Germany"
+  },
+  "about": "A junior software engineer with hands-on experience in Java, TypeScript/JavaScript, Python, and Angular, having applied these skills in various roles, including automating testing processes for embedded devices and programmed firmware for 3D printers, developing a Gmail Addon using Google Apps Script and integrating the OpenAI API to automate invoice processing. Also contributed to cloud-based systems, building scalable access control systems on Google Cloud. Eager to continue expanding my skills and take on new challenges in fields such as automotive, embedded systems, or web development.",
+
+  "experiences": [
+    {
+      "position": "Intern Software Engineer",
+      "company": "Comlet GmbH, Zweibrücken Germany",
+      "date": "March 2024 - August 2024",
+      "details": [
+        "Developed a new hardware testing tool for embedded devices based on Robot Framework, enabling continuous and repeatable testing without human intervention.",
+        "Programmed firmware for 3D printers (Marlin and OctoPrint) and integrated TMC2209 stepper drivers for enhanced performance.",
+        "Designed and 3D-printed 8 functional prototypes, including fixtures and mounts, to support hardware development.",
+        "Applied CI/CD pipelines to streamline deployment cycles and ensure consistent software updates."
+      ]
+    },
+    {
+      "position": "Intern Software Engineer",
+      "company": "Evenbytes, Santander Spain",
+      "date": "February 2023 - August 2023",
+      "details": [
+        "Developed a Gmail Addon using Google Apps Script and OpenAI API to automatically process incoming invoices every 5 minutes, streamlining data entry.",
+        "Built a cloud-hosted access control system on Google Cloud Run with Firestore to support around 1,000 users, with the ability to scale to more users if required",
+        "Replaced legacy tools with a modernized system, halving development and configuration time.",
+        "Enhanced backend scalability, enabling seamless integration with multiple access control devices."
+      ]
+    },
+    {
+      "position": "Amazon Delivery Driver",
+      "company": "PRB Logistik GmbH, Ramstein Germany",
+      "date": "October 2024 - December 2024",
+      "details": [
+        "Delivered approximately 250 parcels daily with a 95% on-time delivery rate, ensuring high customer satisfaction.",
+        "Improved German language proficiency through daily interactions with a diverse customer base."
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "title": "CAN and OBD reader for BMW",
+      "description": "Developed a Python-based tool for real-time monitoring of OBD and CAN systems, supporting up to 6 parameters. Created a web app using Angular and NodeJS for live data visualization, improving diagnostic efficiency by automating insights."
+    },
+    {
+      "title": "LogistiX: Factory Builder Unity Game",
+      "description": "Designed a 3D factory automation game in Unity with C#, featuring 11 crafting recipes and 3 processing machines. Modeled assets in Blender to maintain cohesive game aesthetics."
+    },
+    {
+      "title": "Dynamic CV Generator",
+      "description": "Created a tool for efficiently customizing resumes to job descriptions, streamlining CV tailoring for users. This CV PDF was generated using the tool, and you can find a live demo on my GitHub page."
+    }
+  ],
+  "education": {
+    "degree": "Bachelor in Computer Science",
+    "university": "University of Valladolid, Spain",
+    "graduation_date": "Graduated in August 2024"
+  },
+  "languages": [
+    "Spanish - Native",
+    "English - Advanced",
+    "German - Beginner (A1)"
+  ],
+  "softSkills": [
+    "Fast Learner",
+    "Team Player",
+    "Problem Solver",
+    "Flexible",
+    "Good Communication"
+  ],
+  "other": [
+    "B Drivers License",
+    "Available Now"
+  ]
+}

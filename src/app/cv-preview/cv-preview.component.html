@@ -1,78 +1,88 @@
-<div id="cv-template" class="cv-container">
-  <!-- Personal Information -->
-  <header class="cv-header">
-    <div class="profile-picture">
-      <img src="assets/Profilepic.jpg" alt="Profile Picture"/>
-    </div>
-    <div class="personal-info">
-      <h1>Mario Pereda</h1>
-      <h2>Junior Software Engineer</h2>
-      <p>+49 1724 605722 | mario.pereda.08&#64;gmail.com</p>
-      <p>Friedrichshafenerstr 24a, 70329, Stuttgart, Germany</p>
-    </div>
-  </header>
+<div *ngFor="let data of profileData">
+    <div id="cv-template" class="cv-container">
+    <!-- Personal Information -->
+    <header class="cv-header">
+      <div class="profile-picture">
+        <img src="assets/Profilepic.png" alt="Profile Picture" />
+      </div>
+      <div class="personal-info">
+        <h1>{{ data.contactDetails.name }}</h1>
+        <h2>{{ data.contactDetails.title }}</h2>
+        <p>{{ data.contactDetails.gmailAddress }}</p>
+        <p>{{ data.contactDetails.phoneNumber }}</p>
+        <p>{{ data.contactDetails.livingAddress }}</p>
+        <a href="https://www.linkedin.com/in/mario-pereda-puyo-57061b253/"
+          >Linkedin</a
+        >
+        | <a href="https://github.com/MafioP">Github</a>
+      </div>
+    </header>
 
-  <!-- About Me -->
-  <section class="cv-section">
-    <h3>About Me</h3>
-    <p>
-      I am a recently graduated software engineer looking for experience in the IT field. Passionate
-      about technology, web development, and the automotive world, but ready to take on new
-      challenges.
-    </p>
-  </section>
+    <div class="cv-template-1">
+      <!-- About Me
+      <section class="cv-section">
+        <h3>About</h3>
+        <p>{{data.about}}</p>
+      </section> -->
 
-  <!-- Professional Experience -->
-  <section class="cv-section">
-    <h3>Professional Experience</h3>
-    <div *ngFor="let experience of experiences" class="experience-item">
-      <h4>{{ experience.position }} | {{ experience.company }}</h4>
-      <p><strong>{{ experience.date }}</strong></p>
-      <ul>
-        <li *ngFor="let detail of experience.details">{{ detail }}</li>
+      <!-- Professional Experience -->
+      <section class="cv-section">
+        <h3>Professional Experience</h3>
+        <div *ngFor="let experience of data.experiences" class="experience-item">
+          <h4>{{ experience.position }} | {{ experience.company }}</h4>
+          <p>
+            <strong>{{ experience.date }}</strong>
+          </p>
+          <ul>
+            <li *ngFor="let detail of experience.details">{{ detail }}</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Education -->
+      <section class="cv-section">
+        <h3>Education</h3>
+        <div>
+          <h4>{{data.education.degree}}</h4>
+          <p>{{data.education.university}} | {{data.education.graduation_date}}</p>
+        </div>
+      </section>
+    </div>
+    <section class="cv-section">
+      <div id="skills-title">
+        <!-- Skills -->
+        <h3>Skills</h3>
+      </div>
+      <ul class="skills-list">
+        <li *ngFor="let skill of skills">{{ skill }}</li>
+        <li *ngFor="let skill of data.softSkills">{{ skill }}</li>
       </ul>
+    </section>
+    <section class="cv-section">
+      <div id="languages-title">
+        <!-- Languages -->
+        <h3>Languages</h3>
+      </div>
+      <ul class="languages-list">
+        <li *ngFor="let language of data.languages">{{ language }}</li>
+      </ul>
+    </section>
+    <div class="cv-template-2">
+      <!-- Personal Projects -->
+      <section class="cv-section">
+        <h3>Personal Projects</h3>
+        <div *ngFor="let project of data.projects">
+          <h4>{{ project.title }}</h4>
+          <p>{{ project.description }}</p>
+        </div>
+      </section>
     </div>
-  </section>
-
-
-  <!-- Education -->
-  <section class="cv-section">
-    <h3>Education</h3>
-    <div>
-      <h4>Bachelor of Computer Science</h4>
-      <p>University of Valladolid, Spain | Graduated on August 2024</p>
-    </div>
-  </section>
-
-  <!-- Skills -->
-  <section class="cv-section">
-    <h3>Skills</h3>
-    <ul class="skills-list">
-      <li *ngFor="let skill of skills">{{ skill }}</li>
-      <li>Fast Learner</li>
-      <li>Team Player</li>
-      <li>Problem Solving</li>
-      <li>Flexible</li>
-      <li>Good Communication</li>
-    </ul>
-  </section>
-
-  <!-- Languages -->
-  <section class="cv-section">
-    <h3>Languages</h3>
-    <ul class="languages-list">
-      <li *ngFor="let language of languages">{{ language }}</li>
-    </ul>
-  </section>
-
-  <!-- Personal Projects -->
-  <section class="cv-section">
-    <h3>Personal Projects</h3>
-    <div *ngFor="let project of projects">
-      <h4>{{ project.title }}</h4>
-      <p>{{ project.description }}</p>
-    </div>
-  </section>
+      <section class="cv-section">
+        <h3>Extra Information</h3>
+        <ul class="languages-list">
+          <li *ngFor="let other of data.other">{{ other }}</li>
+        </ul>
+      </section>
+  </div>
 </div>
 
-<button (click)="downloadPDF()">Download as PDF</button>
