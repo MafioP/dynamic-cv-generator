@@ -7,4 +7,10 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'dynamic-cv-generator';
+
+  currentLanguages: string[] = ['de', 'en'];
+
+  updateLanguages(languages: string[]) {
+    this.currentLanguages = languages;
+  }
 }

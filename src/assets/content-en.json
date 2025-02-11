@@ -1,7 +1,7 @@
 {
   "contactDetails": {
     "name": "Mario Pereda",
-    "title": "Junior Software Engineer",
+    "title": "Software Engineer",
     "phoneNumber": "+49 1575 1916935",
     "gmailAddress": "mario.pereda.08@gmail.com",
     "livingAddress": "Stuttgart, Germany"
@@ -14,9 +14,9 @@
       "company": "Comlet GmbH, Zweibrücken Germany",
       "date": "March 2024 - August 2024",
       "details": [
-        "Automated testing processes for embedded devices using Robot Framework, enabling continuous and repeatable testing without human intervention.",
-        "Designed and 3D-printed 8 functional prototypes, including fixtures and mounts, to support hardware development.",
+        "Developed a new hardware testing tool for embedded devices based on Robot Framework, enabling continuous and repeatable testing without human intervention.",
         "Programmed firmware for 3D printers (Marlin and OctoPrint) and integrated TMC2209 stepper drivers for enhanced performance.",
+        "Designed and 3D-printed 8 functional prototypes, including fixtures and mounts, to support hardware development.",
         "Applied CI/CD pipelines to streamline deployment cycles and ensure consistent software updates."
       ]
     },
@@ -26,7 +26,7 @@
       "date": "February 2023 - August 2023",
       "details": [
         "Developed a Gmail Addon using Google Apps Script and OpenAI API to automatically process incoming invoices every 5 minutes, streamlining data entry.",
-        "Built a cloud-hosted access control system on Google Cloud Run with Firestore, supporting between 100 and 1,000 users.",
+        "Built a cloud-hosted access control system on Google Cloud Run with Firestore to support around 1,000 users, with the ability to scale to more users if required",
         "Replaced legacy tools with a modernized system, halving development and configuration time.",
         "Enhanced backend scalability, enabling seamless integration with multiple access control devices."
       ]

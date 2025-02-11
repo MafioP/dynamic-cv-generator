@@ -1,7 +1,7 @@
 {
   "contactDetails": {
     "name": "Mario Pereda",
-    "title": "Junior SoftwareEntwickler",
+    "title": "SoftwareEntwickler",
     "phoneNumber": "+49 1575 1916935",
     "gmailAddress": "mario.pereda.08@gmail.com",
     "livingAddress": "Stuttgart, Germany"
@@ -10,34 +10,34 @@
 
   "experiences": [
     {
-      "position": "Praktikant Software Engineer",
-      "company": "Comlet GmbH, Zweibrücken Deutschland",
+      "position": "Praktikant Softwareentwickler",
+      "company": "Comlet GmbH, Zweibrücken, Deutschland",
       "date": "März 2024 - August 2024",
       "details": [
-        "Automatisierung von Testprozessen für Embedded-Geräte mit dem Robot Framework, um kontinuierliche und wiederholbare Tests ohne menschliches Eingreifen zu ermöglichen.",
-        "Entwurf und 3D-Druck von 8 funktionalen Prototypen, einschließlich Vorrichtungen und Halterungen, zur Unterstützung der Hardwareentwicklung.",
-        "Programmierung von Firmware für 3D-Drucker (Marlin und OctoPrint) und Integration von TMC2209-Schrittmotorentreibern zur Leistungssteigerung.",
-        "Anwendung von CI/CD-Pipelines zur Optimierung von Bereitstellungsvorgängen und Sicherstellung konsistenter Software-Updates."
+        "Entwicklung eines neuen Hardware-Testtools für eingebettete Systeme auf Basis von Robot Framework, das kontinuierliche und wiederholbare Tests ohne menschliches Eingreifen ermöglicht.",
+        "Firmware für 3D-Drucker (Marlin und OctoPrint) programmiert und TMC2209-Schrittmotortreiber für verbesserte Leistung integriert.",
+        "Entwurf und 3D-Druck von 8 funktionalen Prototypen, einschließlich Halterungen und Befestigungen zur Unterstützung der Hardware-Entwicklung.",
+        "Anwendung von CI/CD-Pipelines zur Optimierung von Bereitstellungszyklen und zur Gewährleistung konsistenter Software-Updates."
       ]
     },
     {
-      "position": "Praktikant Software Engineer",
-      "company": "Evenbytes, Santander Spanien",
+      "position": "Praktikant Softwareentwickler",
+      "company": "Evenbytes, Santander, Spanien",
       "date": "Februar 2023 - August 2023",
       "details": [
-        "Entwicklung eines Gmail Add-ons mit Google Apps Script und der OpenAI API zur automatischen Verarbeitung eingehender Rechnungen alle 5 Minuten, was die Dateneingabe optimiert.",
-        "Erstellung eines cloud-hosted Zugangskontrollsystems auf Google Cloud Run mit Firestore, das zwischen 100 und 1.000 Nutzer unterstützt.",
-        "Ersetzung von Legacy-Tools durch ein modernisiertes System, was die Entwicklungs- und Konfigurationszeit halbierte.",
-        "Verbesserung der Backend-Skalierbarkeit, um nahtlose Integrationen mit mehreren Zugangskontrollgeräten zu ermöglichen."
+        "Entwicklung eines Gmail-Addons mit Google Apps Script und OpenAI API zur automatischen Verarbeitung eingehender Rechnungen alle 5 Minuten, wodurch die Dateneingabe optimiert wurde.",
+        "Entwicklung eines cloudbasierten Zugangskontrollsystems auf Google Cloud Run mit Firestore zur Unterstützung von rund 1.000 Nutzern mit der Möglichkeit zur Skalierung auf eine größere Nutzeranzahl.",
+        "Ersetzung veralteter Tools durch ein modernes System, wodurch sich die Entwicklungs- und Konfigurationszeit halbierte.",
+        "Verbesserung der Backend-Skalierbarkeit und nahtlose Integration mit mehreren Zugangskontrollgeräten ermöglicht."
       ]
     },
     {
       "position": "Amazon Lieferfahrer",
-      "company": "PRB Logistik GmbH, Ramstein Deutschland",
+      "company": "PRB Logistik GmbH, Ramstein, Deutschland",
       "date": "Oktober 2024 - Dezember 2024",
       "details": [
-        "Zustellung von täglich etwa 250 Paketen mit einer Pünktlichkeitsrate von 95 %, was zu einer hohen Kundenzufriedenheit führt.",
-        "Verbesserung der deutschen Sprachkenntnisse durch tägliche Interaktionen mit einer vielfältigen Kundenbasis."
+        "Tägliche Zustellung von ca. 250 Paketen mit einer pünktlichen Lieferquote von 95 %, um eine hohe Kundenzufriedenheit sicherzustellen.",
+        "Verbesserung der Deutschkenntnisse durch tägliche Interaktionen mit einer vielfältigen Kundschaft."
       ]
     }
   ],

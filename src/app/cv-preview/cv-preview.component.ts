@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { CvService } from '../services/cv.service';
 import jsPDF from 'jspdf';
 import { ImageConverterService } from '../services/image-converter.service';
@@ -13,10 +13,13 @@ import '../../assets/G_ari_bd-bold'
   templateUrl: './cv-preview.component.html',
   styleUrls: ['./cv-preview.component.css'],
 })
-export class CvPreviewComponent {
+export class CvPreviewComponent implements OnChanges{
   profileData = [deData, enData];
   profilePicBase64: string | null = null;
   skills: string[] = [];
+
+  @Input() selectedLanguages: string[] = ['de', 'en'];
+
 
   constructor(
     private cvService: CvService,
@@ -35,6 +38,9 @@ export class CvPreviewComponent {
           console.error('Error converting image:', error);
         }
       );
+  }
+  ngOnChanges(): void {
+    this.profileData = this.selectedLanguages.map(lang => (lang === 'de' ? deData : enData));
   }
 
   getComputedStyles(element: HTMLElement): Record<string, string> {
@@ -223,7 +229,7 @@ export class CvPreviewComponent {
           // console.log("SKILLS: initial offset ", offsetY);
           // console.log("PAGE SIZE: ", doc.internal.pageSize.getHeight() , "index " ,langIndex);
           //nudge the y offset
-          offsetY += 5 + 10 * (doc.getCurrentPageInfo().pageNumber - 1);
+          offsetY += 5 + 15 * (doc.getCurrentPageInfo().pageNumber - 1);
           console.log("skills starting offset: ", offsetY);
           //offsetY = 20;
           offsetY = setHeader('Skills');
@@ -263,7 +269,11 @@ export class CvPreviewComponent {
                autoPaging: "text",
               callback: () => {
                 console.log('HTML Starting offset:', offsetY, 'i:', index);
-                offsetY += Math.floor(this.getClonedElementHeight(cloneElement)/2.5) ;
+                if (this.selectedLanguages[0].match('en')){
+                  offsetY += Math.floor(this.getClonedElementHeight(cloneElement)/2.35) ;
+                } else {
+                  offsetY += Math.floor(this.getClonedElementHeight(cloneElement)/2.5) ;
+                }
                 console.log('Added', id, 'offset', offsetY);
                 resolve(); // Ensure the loop waits for this step
               },
