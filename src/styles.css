@@ -1,7 +1,7 @@
 body, html {
   display: flex;
   align-items: center;
-  min-width: 800px;
+  min-width: 900px;
   margin: auto;
   font-family: Arial, sans-serif;
 }

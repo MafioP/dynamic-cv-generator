@@ -66,7 +66,8 @@ export class CvPreviewComponent implements OnChanges{
 
     document.body.appendChild(clonedElement); // Add to DOM
 
-    const height = clonedElement.offsetHeight; // Get height
+    const height = clonedElement.scrollHeight; // Get height
+    console.log(clonedElement)
     document.body.removeChild(clonedElement); // Remove after measuring
     console.log("HTML Clone Height: ", height);
     return height;
@@ -103,7 +104,7 @@ export class CvPreviewComponent implements OnChanges{
       const rectRoundess = 5;
       let currentX = startX + padding / 2;
       console.log('Adding skills');
-      items.forEach((item) => {
+      items.forEach((item,i) => {
         doc.setFillColor(100, 100, 100);
         doc.setTextColor(255, 255, 255);
         doc.setFontSize(9);
@@ -120,6 +121,10 @@ export class CvPreviewComponent implements OnChanges{
         // Add text centered inside the box
         doc.text(item, currentX, startY); // Slight padding for alignment
         currentX += doc.getTextWidth(item) + padding * 1.5; // Move to the next position
+        if (currentX >= 400 && i < items.length - 1) {
+          startY += 15;
+          currentX = startX + padding / 2;
+        }
       });
       doc.setTextColor(0, 0, 0);
 
@@ -229,21 +234,23 @@ export class CvPreviewComponent implements OnChanges{
           // console.log("SKILLS: initial offset ", offsetY);
           // console.log("PAGE SIZE: ", doc.internal.pageSize.getHeight() , "index " ,langIndex);
           //nudge the y offset
-          offsetY += 5 + 15 * (doc.getCurrentPageInfo().pageNumber - 1);
+          //offsetY += 5 + 15 * (doc.getCurrentPageInfo().pageNumber - 1);
+          offsetY -= 10 * (doc.getCurrentPageInfo().pageNumber - 1);;
           console.log("skills starting offset: ", offsetY);
           //offsetY = 20;
           offsetY = setHeader('Skills');
           offsetY = addHorizontalList(this.skills, marginX, offsetY);
           offsetY = addHorizontalList(langData.softSkills, marginX, offsetY);
           // console.log('Added Skills', id, 'offset', offsetY);
-          offsetY = setHeader('Languages');
+          offsetY = setHeader(langData.titles.languages);
           offsetY = addHorizontalList(langData.languages, marginX, offsetY);
           // console.log('Added Language', id, 'offset', offsetY);
           offsetY -= 10;
         }
         if (id === 'other') {
-          offsetY += 10 + 8 * (doc.getCurrentPageInfo().pageNumber - 1);
-          offsetY = setHeader('Other');
+          //offsetY += 15 + 8 * (doc.getCurrentPageInfo().pageNumber - 1);
+          offsetY += 20 - 5 * (doc.getCurrentPageInfo().pageNumber - 1)
+          offsetY = setHeader(langData.titles.other);
           offsetY = addHorizontalList(langData.other, marginX, offsetY);
         }
 
@@ -288,6 +295,6 @@ export class CvPreviewComponent implements OnChanges{
       }
     }
     // Save the PDF after processing all sections
-    doc.save('dynamic-multiple-sections.pdf');
+    doc.save('CV Mario Pereda.pdf');
   }
 }

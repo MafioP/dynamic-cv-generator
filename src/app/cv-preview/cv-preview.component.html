@@ -27,7 +27,7 @@
 
       <!-- Professional Experience -->
       <section class="cv-section">
-        <h3>Professional Experience</h3>
+        <h3>{{data.titles.experience}}</h3>
         <div *ngFor="let experience of data.experiences" class="experience-item">
           <h4>{{ experience.position }} | {{ experience.company }}</h4>
           <p>
@@ -41,7 +41,7 @@
 
       <!-- Education -->
       <section class="cv-section">
-        <h3>Education</h3>
+        <h3>{{data.titles.education}}</h3>
         <div>
           <h4>{{data.education.degree}}</h4>
           <p>{{data.education.university}} | {{data.education.graduation_date}}</p>
@@ -61,7 +61,7 @@
     <section class="cv-section">
       <div id="languages-title">
         <!-- Languages -->
-        <h3>Languages</h3>
+        <h3>{{data.titles.languages}}</h3>
       </div>
       <ul class="languages-list">
         <li *ngFor="let language of data.languages">{{ language }}</li>
@@ -70,7 +70,7 @@
     <div class="cv-template-2">
       <!-- Personal Projects -->
       <section class="cv-section">
-        <h3>Personal Projects</h3>
+        <h3>{{data.titles.project}}</h3>
         <div *ngFor="let project of data.projects">
           <h4>{{ project.title }}</h4>
           <p>{{ project.description }}</p>
@@ -78,7 +78,7 @@
       </section>
     </div>
       <section class="cv-section">
-        <h3>Extra Information</h3>
+        <h3>{{data.titles.other}}</h3>
         <ul class="languages-list">
           <li *ngFor="let other of data.other">{{ other }}</li>
         </ul>

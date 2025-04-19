@@ -21,7 +21,6 @@
 
 .preview-section {
   background-color: white;
-  min-width: 50rem;
-  max-width: 60rem;
+  width: 50rem;
   flex-grow: 2;
 }
