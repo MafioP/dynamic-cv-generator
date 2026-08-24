@@ -61,6 +61,16 @@ export class CvEditorComponent implements OnInit {
       const cvText = [content.en, content.de].map(getSearchableText).join(' ');
       this.detectedSkills = extractSkillsFromText(cvText, this.allSkills());
     });
+
+    // Restore previously selected skills (persisted by CvService). Any
+    // selected skill that isn't in the built-in dictionary was a custom one
+    // -- re-add it under "Custom" so it still shows as a toggleable tag.
+    this.selectedSkills = [...this.cvService.snapshot.skills];
+    const known = new Set(this.allSkills());
+    const missing = this.selectedSkills.filter(skill => !known.has(skill));
+    if (missing.length > 0) {
+      this.skillCategories.push({ name: CUSTOM_CATEGORY, skills: missing });
+    }
   }
 
   get draft(): ResumeData {
