@@ -34,9 +34,11 @@ export class CvEditorComponent implements OnInit {
   selectedLang: Language = 'en';
 
   // Both languages are kept in memory at once so switching tabs never
-  // discards unsaved edits in the language you're not currently viewing.
+  // discards edits in the language you're not currently viewing. Every
+  // edit is pushed to CvContentService immediately (see liveSync) so the
+  // preview always reflects the current draft — there's no separate
+  // "unsaved" state to save or discard.
   private drafts!: CvContent;
-  justSaved = false;
   importError: string | null = null;
 
   // Every section is independently collapsible; all start expanded.
@@ -146,27 +148,27 @@ export class CvEditorComponent implements OnInit {
     this.downloadPDF.emit();
   }
 
-  // --- Content editor: save / discard / reset ---
+  // --- Content editor: live sync / reset ---
 
   selectLanguage(lang: Language): void {
     this.selectedLang = lang;
-    this.justSaved = false;
   }
 
-  save(): void {
+  // Pushes the current draft to CvContentService so the preview (and
+  // localStorage) update immediately. Called after every field edit and
+  // every add/remove/reorder action.
+  liveSync(): void {
     this.cvContentService.updateLanguageContent(this.selectedLang, this.draft);
-    this.justSaved = true;
-  }
-
-  discard(): void {
-    this.drafts[this.selectedLang] = deepClone(this.cvContentService.snapshot[this.selectedLang]);
-    this.justSaved = false;
   }
 
   resetToDefault(): void {
+    const langLabel = this.selectedLang === 'en' ? 'English' : 'German';
+    if (!confirm(`Reset ${langLabel} content to the default? This can't be undone.`)) {
+      return;
+    }
     const defaults = this.cvContentService.getDefaultContent();
     this.drafts[this.selectedLang] = defaults[this.selectedLang];
-    this.justSaved = false;
+    this.liveSync();
   }
 
   // --- Generic reordering, shared by every repeatable list section ---
@@ -178,16 +180,19 @@ export class CvEditorComponent implements OnInit {
     }
     const [item] = list.splice(index, 1);
     list.splice(target, 0, item);
+    this.liveSync();
   }
 
   // --- Experiences ---
 
   addExperience(): void {
     this.draft.experiences.push({ position: '', company: '', date: '', details: [''] });
+    this.liveSync();
   }
 
   removeExperience(index: number): void {
     this.draft.experiences.splice(index, 1);
+    this.liveSync();
   }
 
   detailsText(experience: WorkExperience): string {
@@ -196,36 +201,43 @@ export class CvEditorComponent implements OnInit {
 
   setDetailsText(experience: WorkExperience, text: string): void {
     experience.details = text.split('\n');
+    this.liveSync();
   }
 
   // --- Education ---
 
   addEducation(): void {
     this.draft.education.push({ degree: '', university: '', graduation_date: '' } as Education);
+    this.liveSync();
   }
 
   removeEducation(index: number): void {
     this.draft.education.splice(index, 1);
+    this.liveSync();
   }
 
   // --- Projects ---
 
   addProject(): void {
     this.draft.projects.push({ title: '', description: '' } as Project);
+    this.liveSync();
   }
 
   removeProject(index: number): void {
     this.draft.projects.splice(index, 1);
+    this.liveSync();
   }
 
   // --- Generic string-list helpers (languages / softSkills / other) ---
 
   addListItem(list: string[]): void {
     list.push('');
+    this.liveSync();
   }
 
   removeListItem(list: string[], index: number): void {
     list.splice(index, 1);
+    this.liveSync();
   }
 
   // --- Export / Import ---
@@ -252,7 +264,6 @@ export class CvEditorComponent implements OnInit {
         this.cvContentService.importFromJSON(reader.result as string);
         this.drafts = deepClone(this.cvContentService.snapshot);
         this.importError = null;
-        this.justSaved = true;
       } catch (error) {
         this.importError = error instanceof Error ? error.message : 'Failed to import file.';
       }

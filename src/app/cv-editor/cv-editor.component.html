@@ -1,5 +1,17 @@
 <div class="cv-editor">
 
+  <!-- Output languages + download: the primary action, always visible -->
+  <div class="output-bar">
+    <h4>CV Output Languages</h4>
+    <label>
+      <input type="checkbox" [(ngModel)]="selectedLanguages.de" (change)="onLanguageChange()"> German
+    </label>
+    <label>
+      <input type="checkbox" [(ngModel)]="selectedLanguages.en" (change)="onLanguageChange()"> English
+    </label>
+    <button type="button" (click)="emitDownloadPdf()">Download PDF</button>
+  </div>
+
   <!-- Skills (language-agnostic: applies to both EN and DE output) -->
   <div class="section">
     <button type="button" class="section-header" (click)="skillsExpanded = !skillsExpanded">
@@ -50,19 +62,6 @@
           </span>
         </div>
       </div>
-
-      <div class="selectLanguages">
-        <h4>Select CV Languages</h4>
-        <label>
-          <input type="checkbox" [(ngModel)]="selectedLanguages.de" (change)="onLanguageChange()"> German
-        </label>
-        <label>
-          <input type="checkbox" [(ngModel)]="selectedLanguages.en" (change)="onLanguageChange()"> English
-        </label>
-      </div>
-      <div>
-        <button type="button" (click)="emitDownloadPdf()">Download PDF</button>
-      </div>
     </div>
   </div>
 
@@ -80,18 +79,28 @@
       (click)="selectLanguage('de')">German</button>
   </div>
 
-  <form (ngSubmit)="save()">
+  <div class="content-fields">
     <!-- Contact Details -->
     <div class="section">
       <button type="button" class="section-header" (click)="contactExpanded = !contactExpanded">
         <span class="chevron">{{ contactExpanded ? '▾' : '▸' }}</span> Contact Details
       </button>
       <div class="section-body" *ngIf="contactExpanded">
-        <label>Name <input type="text" [(ngModel)]="draft.contactDetails.name" name="name" /></label>
-        <label>Title <input type="text" [(ngModel)]="draft.contactDetails.title" name="title" /></label>
-        <label>Phone <input type="text" [(ngModel)]="draft.contactDetails.phoneNumber" name="phoneNumber" /></label>
-        <label>Email <input type="text" [(ngModel)]="draft.contactDetails.gmailAddress" name="gmailAddress" /></label>
-        <label>Address <input type="text" [(ngModel)]="draft.contactDetails.livingAddress" name="livingAddress" /></label>
+        <label>Name
+          <input type="text" [ngModel]="draft.contactDetails.name" (ngModelChange)="draft.contactDetails.name = $event; liveSync()" />
+        </label>
+        <label>Title
+          <input type="text" [ngModel]="draft.contactDetails.title" (ngModelChange)="draft.contactDetails.title = $event; liveSync()" />
+        </label>
+        <label>Phone
+          <input type="text" [ngModel]="draft.contactDetails.phoneNumber" (ngModelChange)="draft.contactDetails.phoneNumber = $event; liveSync()" />
+        </label>
+        <label>Email
+          <input type="text" [ngModel]="draft.contactDetails.gmailAddress" (ngModelChange)="draft.contactDetails.gmailAddress = $event; liveSync()" />
+        </label>
+        <label>Address
+          <input type="text" [ngModel]="draft.contactDetails.livingAddress" (ngModelChange)="draft.contactDetails.livingAddress = $event; liveSync()" />
+        </label>
       </div>
     </div>
 
@@ -101,7 +110,7 @@
         <span class="chevron">{{ aboutExpanded ? '▾' : '▸' }}</span> About
       </button>
       <div class="section-body" *ngIf="aboutExpanded">
-        <textarea [(ngModel)]="draft.about" name="about" rows="3"></textarea>
+        <textarea rows="3" [ngModel]="draft.about" (ngModelChange)="draft.about = $event; liveSync()"></textarea>
       </div>
     </div>
 
@@ -111,12 +120,24 @@
         <span class="chevron">{{ headingsExpanded ? '▾' : '▸' }}</span> Section Headings
       </button>
       <div class="section-body" *ngIf="headingsExpanded">
-        <label>Experience <input type="text" [(ngModel)]="draft.titles.experience" name="titleExperience" /></label>
-        <label>Projects <input type="text" [(ngModel)]="draft.titles.project" name="titleProject" /></label>
-        <label>Education <input type="text" [(ngModel)]="draft.titles.education" name="titleEducation" /></label>
-        <label>Languages <input type="text" [(ngModel)]="draft.titles.languages" name="titleLanguages" /></label>
-        <label>Skills <input type="text" [(ngModel)]="draft.titles.skills" name="titleSkills" /></label>
-        <label>Other <input type="text" [(ngModel)]="draft.titles.other" name="titleOther" /></label>
+        <label>Experience
+          <input type="text" [ngModel]="draft.titles.experience" (ngModelChange)="draft.titles.experience = $event; liveSync()" />
+        </label>
+        <label>Projects
+          <input type="text" [ngModel]="draft.titles.project" (ngModelChange)="draft.titles.project = $event; liveSync()" />
+        </label>
+        <label>Education
+          <input type="text" [ngModel]="draft.titles.education" (ngModelChange)="draft.titles.education = $event; liveSync()" />
+        </label>
+        <label>Languages
+          <input type="text" [ngModel]="draft.titles.languages" (ngModelChange)="draft.titles.languages = $event; liveSync()" />
+        </label>
+        <label>Skills
+          <input type="text" [ngModel]="draft.titles.skills" (ngModelChange)="draft.titles.skills = $event; liveSync()" />
+        </label>
+        <label>Other
+          <input type="text" [ngModel]="draft.titles.other" (ngModelChange)="draft.titles.other = $event; liveSync()" />
+        </label>
       </div>
     </div>
 
@@ -135,15 +156,20 @@
               <button type="button" class="remove-btn" (click)="removeExperience(i)">Remove</button>
             </span>
           </div>
-          <label>Position <input type="text" [(ngModel)]="experience.position" [name]="'expPosition' + i" /></label>
-          <label>Company <input type="text" [(ngModel)]="experience.company" [name]="'expCompany' + i" /></label>
-          <label>Date <input type="text" [(ngModel)]="experience.date" [name]="'expDate' + i" /></label>
+          <label>Position
+            <input type="text" [ngModel]="experience.position" (ngModelChange)="experience.position = $event; liveSync()" />
+          </label>
+          <label>Company
+            <input type="text" [ngModel]="experience.company" (ngModelChange)="experience.company = $event; liveSync()" />
+          </label>
+          <label>Date
+            <input type="text" [ngModel]="experience.date" (ngModelChange)="experience.date = $event; liveSync()" />
+          </label>
           <label>Details (one per line)
             <textarea
               rows="4"
               [ngModel]="detailsText(experience)"
-              (ngModelChange)="setDetailsText(experience, $event)"
-              [name]="'expDetails' + i"></textarea>
+              (ngModelChange)="setDetailsText(experience, $event)"></textarea>
           </label>
         </div>
         <button type="button" class="add-btn" (click)="addExperience()">+ Add Experience</button>
@@ -165,9 +191,15 @@
               <button type="button" class="remove-btn" (click)="removeEducation(i)">Remove</button>
             </span>
           </div>
-          <label>Degree <input type="text" [(ngModel)]="edu.degree" [name]="'eduDegree' + i" /></label>
-          <label>University <input type="text" [(ngModel)]="edu.university" [name]="'eduUniversity' + i" /></label>
-          <label>Graduation Date <input type="text" [(ngModel)]="edu.graduation_date" [name]="'eduDate' + i" /></label>
+          <label>Degree
+            <input type="text" [ngModel]="edu.degree" (ngModelChange)="edu.degree = $event; liveSync()" />
+          </label>
+          <label>University
+            <input type="text" [ngModel]="edu.university" (ngModelChange)="edu.university = $event; liveSync()" />
+          </label>
+          <label>Graduation Date
+            <input type="text" [ngModel]="edu.graduation_date" (ngModelChange)="edu.graduation_date = $event; liveSync()" />
+          </label>
         </div>
         <button type="button" class="add-btn" (click)="addEducation()">+ Add Education</button>
       </div>
@@ -188,9 +220,11 @@
               <button type="button" class="remove-btn" (click)="removeProject(i)">Remove</button>
             </span>
           </div>
-          <label>Title <input type="text" [(ngModel)]="project.title" [name]="'projTitle' + i" /></label>
+          <label>Title
+            <input type="text" [ngModel]="project.title" (ngModelChange)="project.title = $event; liveSync()" />
+          </label>
           <label>Description
-            <textarea rows="3" [(ngModel)]="project.description" [name]="'projDesc' + i"></textarea>
+            <textarea rows="3" [ngModel]="project.description" (ngModelChange)="project.description = $event; liveSync()"></textarea>
           </label>
         </div>
         <button type="button" class="add-btn" (click)="addProject()">+ Add Project</button>
@@ -204,7 +238,7 @@
       </button>
       <div class="section-body" *ngIf="languagesExpanded">
         <div class="list-row" *ngFor="let language of draft.languages; let i = index">
-          <input type="text" [(ngModel)]="draft.languages[i]" [name]="'lang' + i" />
+          <input type="text" [ngModel]="language" (ngModelChange)="draft.languages[i] = $event; liveSync()" />
           <button type="button" class="move-btn" [disabled]="i === 0" (click)="moveItem(draft.languages, i, -1)">↑</button>
           <button type="button" class="move-btn" [disabled]="i === draft.languages.length - 1" (click)="moveItem(draft.languages, i, 1)">↓</button>
           <button type="button" class="remove-btn" (click)="removeListItem(draft.languages, i)">✕</button>
@@ -220,7 +254,7 @@
       </button>
       <div class="section-body" *ngIf="softSkillsExpanded">
         <div class="list-row" *ngFor="let skill of draft.softSkills; let i = index">
-          <input type="text" [(ngModel)]="draft.softSkills[i]" [name]="'softSkill' + i" />
+          <input type="text" [ngModel]="skill" (ngModelChange)="draft.softSkills[i] = $event; liveSync()" />
           <button type="button" class="move-btn" [disabled]="i === 0" (click)="moveItem(draft.softSkills, i, -1)">↑</button>
           <button type="button" class="move-btn" [disabled]="i === draft.softSkills.length - 1" (click)="moveItem(draft.softSkills, i, 1)">↓</button>
           <button type="button" class="remove-btn" (click)="removeListItem(draft.softSkills, i)">✕</button>
@@ -236,7 +270,7 @@
       </button>
       <div class="section-body" *ngIf="otherExpanded">
         <div class="list-row" *ngFor="let item of draft.other; let i = index">
-          <input type="text" [(ngModel)]="draft.other[i]" [name]="'other' + i" />
+          <input type="text" [ngModel]="item" (ngModelChange)="draft.other[i] = $event; liveSync()" />
           <button type="button" class="move-btn" [disabled]="i === 0" (click)="moveItem(draft.other, i, -1)">↑</button>
           <button type="button" class="move-btn" [disabled]="i === draft.other.length - 1" (click)="moveItem(draft.other, i, 1)">↓</button>
           <button type="button" class="remove-btn" (click)="removeListItem(draft.other, i)">✕</button>
@@ -246,12 +280,10 @@
     </div>
 
     <div class="actions">
-      <button type="submit" class="save-btn">Save Changes</button>
-      <button type="button" (click)="discard()">Discard Changes</button>
       <button type="button" (click)="resetToDefault()">Reset to Default</button>
-      <span class="saved-hint" *ngIf="justSaved">Saved — the preview is updated.</span>
+      <span class="live-hint">Changes apply to the preview as you type.</span>
     </div>
-  </form>
+  </div>
 
   <div class="import-export">
     <button type="button" (click)="exportJSON()">Download JSON Backup</button>
