@@ -1,9 +1,11 @@
-import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { CvService } from '../services/cv.service';
 import { extractSkillsFromText, getSearchableText } from '../utils/skill-extractor';
+import { SKILL_CATEGORIES, SkillCategory } from '../data/skill-categories';
 import * as enData from '../../assets/content-en.json';
 import * as deData from '../../assets/content-de.json';
 
+const CUSTOM_CATEGORY = 'Custom';
 
 @Component({
   selector: 'app-input-form',
@@ -11,17 +13,13 @@ import * as deData from '../../assets/content-de.json';
   styleUrls: ['./input-form.component.css']
 })
 export class InputFormComponent implements OnInit {
-  availableSkills: string[] = [
-    'Java', 'Python', 'C++', 'C#', 'JavaScript', 'TypeScript', 'Angular', 'Node.js', 'HTML5', 'CSS3',
-    'MySQL', 'MongoDB',
-    'REST APIs', 'OOP', 'Embedded', 'OpenAi API', 'Robot Framework',
-    'Google Cloud Platform', 'Git', 'Docker',
-    'CI/CD', 'Agile/Scrum',
-    '3D Printing', 'CAN Bus', 'Unity'
-  ];
+  skillCategories: SkillCategory[] = SKILL_CATEGORIES.map(category => ({
+    name: category.name,
+    skills: [...category.skills],
+  }));
   selectedSkills: string[] = [];
-  newSkill: string = '';
-  detectedSkills = new Set<string>();
+  detectedSkills: string[] = [];
+  searchQuery: string = '';
 
   @Output() languageChange = new EventEmitter<string[]>(); // Emit an array of selected languages
 
@@ -37,11 +35,37 @@ export class InputFormComponent implements OnInit {
 
   ngOnInit(): void {
     const cvText = [enData, deData].map(getSearchableText).join(' ');
-    this.detectedSkills = new Set(extractSkillsFromText(cvText, this.availableSkills));
+    this.detectedSkills = extractSkillsFromText(cvText, this.allSkills());
+  }
+
+  allSkills(): string[] {
+    return this.skillCategories.flatMap(category => category.skills);
   }
 
   isDetected(skill: string): boolean {
-    return this.detectedSkills.has(skill);
+    return this.detectedSkills.includes(skill);
+  }
+
+  isSelected(skill: string): boolean {
+    return this.selectedSkills.includes(skill);
+  }
+
+  filteredCategories(): SkillCategory[] {
+    const query = this.searchQuery.trim().toLowerCase();
+    if (!query) {
+      return this.skillCategories;
+    }
+    return this.skillCategories
+      .map(category => ({
+        name: category.name,
+        skills: category.skills.filter(skill => skill.toLowerCase().includes(query)),
+      }))
+      .filter(category => category.skills.length > 0);
+  }
+
+  hasExactMatch(): boolean {
+    const query = this.searchQuery.trim().toLowerCase();
+    return this.allSkills().some(skill => skill.toLowerCase() === query);
   }
 
   onLanguageChange(): void {
@@ -60,11 +84,31 @@ export class InputFormComponent implements OnInit {
     this.updateCV();
   }
 
-  addSkill(): void {
-    if (this.newSkill.trim() && !this.availableSkills.includes(this.newSkill.trim())) {
-      this.availableSkills.push(this.newSkill.trim());
-      this.newSkill = ''; // Clear the input box
+  // Handles both the search field's Enter key and its "Add" button: toggles
+  // an exact existing match, or adds the typed text as a new custom skill.
+  submitSearch(): void {
+    const query = this.searchQuery.trim();
+    if (!query) {
+      return;
     }
+
+    const existingSkill = this.allSkills().find(skill => skill.toLowerCase() === query.toLowerCase());
+    if (existingSkill) {
+      this.toggleSkill(existingSkill);
+    } else {
+      this.addCustomSkill(query);
+    }
+    this.searchQuery = '';
+  }
+
+  private addCustomSkill(skill: string): void {
+    let customCategory = this.skillCategories.find(category => category.name === CUSTOM_CATEGORY);
+    if (!customCategory) {
+      customCategory = { name: CUSTOM_CATEGORY, skills: [] };
+      this.skillCategories.push(customCategory);
+    }
+    customCategory.skills.push(skill);
+    this.toggleSkill(skill);
   }
 
   updateCV(): void {
