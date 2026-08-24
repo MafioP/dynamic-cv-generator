@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { CvContentService, Language, CvContent } from '../services/cv-content.service';
 import { ResumeData, WorkExperience, Project } from '../interfaces/profile';
 
@@ -12,8 +12,13 @@ function deepClone<T>(value: T): T {
   styleUrls: ['./cv-editor.component.css']
 })
 export class CvEditorComponent implements OnInit {
-  expanded = false;
+  // Detailed content-editing form starts open; the skill selector above it
+  // is always visible.
+  expanded = true;
   selectedLang: Language = 'en';
+
+  @Output() downloadPDF = new EventEmitter<void>();
+  @Output() languageChange = new EventEmitter<string[]>();
 
   // Both languages are kept in memory at once so switching tabs never
   // discards unsaved edits in the language you're not currently viewing.

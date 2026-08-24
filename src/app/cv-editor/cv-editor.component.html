@@ -1,4 +1,10 @@
 <div class="cv-editor">
+  <app-input-form
+    (downloadPDF)="downloadPDF.emit()"
+    (languageChange)="languageChange.emit($event)"></app-input-form>
+
+  <hr class="section-divider" />
+
   <button type="button" class="toggle-btn" (click)="toggleExpanded()">
     {{ expanded ? '▾' : '▸' }} Edit CV Content
   </button>

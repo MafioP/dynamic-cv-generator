@@ -4,8 +4,13 @@
 }
 
 .cv-editor {
-  margin: 0 20px 20px;
   font-family: Arial, sans-serif;
+}
+
+.section-divider {
+  border: none;
+  border-top: 1px solid #e0e0e0;
+  margin: 18px 0;
 }
 
 .toggle-btn {
@@ -16,6 +21,8 @@
   border-radius: 6px;
   font-size: 14px;
   cursor: pointer;
+  width: 100%;
+  text-align: left;
 }
 
 .toggle-btn:hover {
@@ -28,7 +35,8 @@
   padding: 16px 20px;
   margin-top: 10px;
   background-color: #fafafa;
-  max-width: 700px;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .lang-tabs {

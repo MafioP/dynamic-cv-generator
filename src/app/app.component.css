@@ -13,8 +13,8 @@
 }
 
 .input-section {
-  min-width: 300px;
-  max-width: 400px;
+  min-width: 320px;
+  max-width: 520px;
   margin-left: 0;
   flex-grow: 1
 }
