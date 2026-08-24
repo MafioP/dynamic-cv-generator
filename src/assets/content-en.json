@@ -54,11 +54,13 @@
       "description": "Created a tool for efficiently customizing resumes to job descriptions streamlining CV tailoring for users. This CV PDF was generated using the tool, and a live demo is available on my GitHub page."
     }
   ],
-  "education": {
-    "degree": "Bachelor in Computer Science",
-    "university": "University of Valladolid, Spain",
-    "graduation_date": "August 2024"
-  },
+  "education": [
+    {
+      "degree": "Bachelor in Computer Science",
+      "university": "University of Valladolid, Spain",
+      "graduation_date": "August 2024"
+    }
+  ],
   "languages": [
     "English - Fluent",
     "German - Beginner (A2)",

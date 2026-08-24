@@ -32,7 +32,7 @@ describe('getSearchableText', () => {
         { position: 'Engineer', company: 'Acme', date: '2024', details: ['Detail one'] },
       ],
       projects: [{ title: 'Project title', description: 'Project description' }],
-      education: { degree: 'Degree', university: 'Uni', graduation_date: '2024' },
+      education: [{ degree: 'Degree', university: 'Uni', graduation_date: '2024' }],
     };
 
     const text = getSearchableText(data);

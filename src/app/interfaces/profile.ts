@@ -44,7 +44,7 @@ export interface ResumeData {
   about: string;
   experiences: WorkExperience[];
   projects: Project[];
-  education: Education;
+  education: Education[];
   languages: string[];
   softSkills: string[];
   other: string[];

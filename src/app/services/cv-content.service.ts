@@ -22,6 +22,18 @@ function isValidContent(value: unknown): value is CvContent {
   return !!value && typeof value === 'object' && 'en' in value && 'de' in value;
 }
 
+// `education` used to be a single object; migrate any content saved before
+// it became an array so old localStorage/export data keeps loading.
+function normalizeContent(content: CvContent): CvContent {
+  (Object.keys(content) as Language[]).forEach((lang) => {
+    const education = (content[lang] as unknown as { education: unknown }).education;
+    if (education && !Array.isArray(education)) {
+      content[lang].education = [education as ResumeData['education'][number]];
+    }
+  });
+  return content;
+}
+
 /**
  * Single source of truth for the CV's editable content. Seeds from
  * localStorage if the user has previously edited/imported content,
@@ -66,7 +78,7 @@ export class CvContentService {
     if (!isValidContent(parsed)) {
       throw new Error('Invalid CV content: expected an object with "en" and "de" keys.');
     }
-    this.setContent(parsed);
+    this.setContent(normalizeContent(parsed));
   }
 
   private persist(content: CvContent): void {
@@ -83,7 +95,7 @@ export class CvContentService {
       if (raw) {
         const parsed = JSON.parse(raw);
         if (isValidContent(parsed)) {
-          return parsed;
+          return normalizeContent(parsed);
         }
       }
     } catch (error) {

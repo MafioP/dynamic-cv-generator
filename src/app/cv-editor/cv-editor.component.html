@@ -1,61 +1,139 @@
 <div class="cv-editor">
-  <app-input-form
-    (downloadPDF)="downloadPDF.emit()"
-    (languageChange)="languageChange.emit($event)"></app-input-form>
+
+  <!-- Skills (language-agnostic: applies to both EN and DE output) -->
+  <div class="section">
+    <button type="button" class="section-header" (click)="skillsExpanded = !skillsExpanded">
+      <span class="chevron">{{ skillsExpanded ? '▾' : '▸' }}</span> Select Your Skills
+    </button>
+    <div class="section-body" *ngIf="skillsExpanded">
+      <div class="skill-search">
+        <input
+          type="text"
+          [(ngModel)]="searchQuery"
+          placeholder="Search skills or add your own..."
+          (keydown.enter)="submitSearch()"
+        />
+        <button type="button" (click)="submitSearch()">
+          {{ searchQuery.trim() && !hasExactMatch() ? 'Add' : 'Go' }}
+        </button>
+      </div>
+      <p class="search-hint" *ngIf="searchQuery.trim() && !hasExactMatch()">
+        Press Enter to add "{{ searchQuery.trim() }}" as a new skill
+      </p>
+
+      <!-- Suggested from CV content -->
+      <div class="skill-category suggested" *ngIf="detectedSkills.length">
+        <h4>Suggested from your CV</h4>
+        <div class="skills-tags">
+          <span
+            *ngFor="let skill of detectedSkills"
+            [class.selected]="isSelected(skill)"
+            class="detected"
+            title="Found in your CV content"
+            (click)="toggleSkill(skill)">
+            {{ skill }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Categorized dictionary -->
+      <div class="skill-category" *ngFor="let category of filteredCategories()">
+        <h4>{{ category.name }}</h4>
+        <div class="skills-tags">
+          <span
+            *ngFor="let skill of category.skills"
+            [class.selected]="isSelected(skill)"
+            [class.detected]="isDetected(skill)"
+            [title]="isDetected(skill) ? 'Found in your CV content' : ''"
+            (click)="toggleSkill(skill)">
+            {{ skill }}
+          </span>
+        </div>
+      </div>
+
+      <div class="selectLanguages">
+        <h4>Select CV Languages</h4>
+        <label>
+          <input type="checkbox" [(ngModel)]="selectedLanguages.de" (change)="onLanguageChange()"> German
+        </label>
+        <label>
+          <input type="checkbox" [(ngModel)]="selectedLanguages.en" (change)="onLanguageChange()"> English
+        </label>
+      </div>
+      <div>
+        <button type="button" (click)="emitDownloadPdf()">Download PDF</button>
+      </div>
+    </div>
+  </div>
 
   <hr class="section-divider" />
 
-  <button type="button" class="toggle-btn" (click)="toggleExpanded()">
-    {{ expanded ? '▾' : '▸' }} Edit CV Content
-  </button>
+  <h3 class="editor-title">Edit CV Content</h3>
+  <div class="lang-tabs">
+    <button
+      type="button"
+      [class.active]="selectedLang === 'en'"
+      (click)="selectLanguage('en')">English</button>
+    <button
+      type="button"
+      [class.active]="selectedLang === 'de'"
+      (click)="selectLanguage('de')">German</button>
+  </div>
 
-  <div class="editor-body" *ngIf="expanded">
-    <div class="lang-tabs">
-      <button
-        type="button"
-        [class.active]="selectedLang === 'en'"
-        (click)="selectLanguage('en')">English</button>
-      <button
-        type="button"
-        [class.active]="selectedLang === 'de'"
-        (click)="selectLanguage('de')">German</button>
-    </div>
-
-    <form (ngSubmit)="save()">
-      <!-- Contact Details -->
-      <fieldset>
-        <legend>Contact Details</legend>
+  <form (ngSubmit)="save()">
+    <!-- Contact Details -->
+    <div class="section">
+      <button type="button" class="section-header" (click)="contactExpanded = !contactExpanded">
+        <span class="chevron">{{ contactExpanded ? '▾' : '▸' }}</span> Contact Details
+      </button>
+      <div class="section-body" *ngIf="contactExpanded">
         <label>Name <input type="text" [(ngModel)]="draft.contactDetails.name" name="name" /></label>
         <label>Title <input type="text" [(ngModel)]="draft.contactDetails.title" name="title" /></label>
         <label>Phone <input type="text" [(ngModel)]="draft.contactDetails.phoneNumber" name="phoneNumber" /></label>
         <label>Email <input type="text" [(ngModel)]="draft.contactDetails.gmailAddress" name="gmailAddress" /></label>
         <label>Address <input type="text" [(ngModel)]="draft.contactDetails.livingAddress" name="livingAddress" /></label>
-      </fieldset>
+      </div>
+    </div>
 
-      <!-- About -->
-      <fieldset>
-        <legend>About</legend>
+    <!-- About -->
+    <div class="section">
+      <button type="button" class="section-header" (click)="aboutExpanded = !aboutExpanded">
+        <span class="chevron">{{ aboutExpanded ? '▾' : '▸' }}</span> About
+      </button>
+      <div class="section-body" *ngIf="aboutExpanded">
         <textarea [(ngModel)]="draft.about" name="about" rows="3"></textarea>
-      </fieldset>
+      </div>
+    </div>
 
-      <!-- Section Headings -->
-      <fieldset>
-        <legend>Section Headings</legend>
+    <!-- Section Headings -->
+    <div class="section">
+      <button type="button" class="section-header" (click)="headingsExpanded = !headingsExpanded">
+        <span class="chevron">{{ headingsExpanded ? '▾' : '▸' }}</span> Section Headings
+      </button>
+      <div class="section-body" *ngIf="headingsExpanded">
         <label>Experience <input type="text" [(ngModel)]="draft.titles.experience" name="titleExperience" /></label>
         <label>Projects <input type="text" [(ngModel)]="draft.titles.project" name="titleProject" /></label>
         <label>Education <input type="text" [(ngModel)]="draft.titles.education" name="titleEducation" /></label>
         <label>Languages <input type="text" [(ngModel)]="draft.titles.languages" name="titleLanguages" /></label>
         <label>Skills <input type="text" [(ngModel)]="draft.titles.skills" name="titleSkills" /></label>
         <label>Other <input type="text" [(ngModel)]="draft.titles.other" name="titleOther" /></label>
-      </fieldset>
+      </div>
+    </div>
 
-      <!-- Experiences -->
-      <fieldset>
-        <legend>Experience</legend>
+    <!-- Experiences -->
+    <div class="section">
+      <button type="button" class="section-header" (click)="experienceExpanded = !experienceExpanded">
+        <span class="chevron">{{ experienceExpanded ? '▾' : '▸' }}</span> Experience
+      </button>
+      <div class="section-body" *ngIf="experienceExpanded">
         <div class="entry" *ngFor="let experience of draft.experiences; let i = index">
           <div class="entry-header">
             <span>Entry {{ i + 1 }}</span>
-            <button type="button" class="remove-btn" (click)="removeExperience(i)">Remove</button>
+            <span class="entry-actions">
+              <button type="button" class="move-btn" [disabled]="i === 0" (click)="moveItem(draft.experiences, i, -1)">↑</button>
+              <button type="button" class="move-btn" [disabled]="i === draft.experiences.length - 1" (click)="moveItem(draft.experiences, i, 1)">↓</button>
+              <button type="button" class="remove-btn" (click)="removeExperience(i)">Remove</button>
+            </span>
           </div>
           <label>Position <input type="text" [(ngModel)]="experience.position" [name]="'expPosition' + i" /></label>
           <label>Company <input type="text" [(ngModel)]="experience.company" [name]="'expCompany' + i" /></label>
@@ -69,23 +147,46 @@
           </label>
         </div>
         <button type="button" class="add-btn" (click)="addExperience()">+ Add Experience</button>
-      </fieldset>
+      </div>
+    </div>
 
-      <!-- Education -->
-      <fieldset>
-        <legend>Education</legend>
-        <label>Degree <input type="text" [(ngModel)]="draft.education.degree" name="eduDegree" /></label>
-        <label>University <input type="text" [(ngModel)]="draft.education.university" name="eduUniversity" /></label>
-        <label>Graduation Date <input type="text" [(ngModel)]="draft.education.graduation_date" name="eduDate" /></label>
-      </fieldset>
+    <!-- Education -->
+    <div class="section">
+      <button type="button" class="section-header" (click)="educationExpanded = !educationExpanded">
+        <span class="chevron">{{ educationExpanded ? '▾' : '▸' }}</span> Education
+      </button>
+      <div class="section-body" *ngIf="educationExpanded">
+        <div class="entry" *ngFor="let edu of draft.education; let i = index">
+          <div class="entry-header">
+            <span>Entry {{ i + 1 }}</span>
+            <span class="entry-actions">
+              <button type="button" class="move-btn" [disabled]="i === 0" (click)="moveItem(draft.education, i, -1)">↑</button>
+              <button type="button" class="move-btn" [disabled]="i === draft.education.length - 1" (click)="moveItem(draft.education, i, 1)">↓</button>
+              <button type="button" class="remove-btn" (click)="removeEducation(i)">Remove</button>
+            </span>
+          </div>
+          <label>Degree <input type="text" [(ngModel)]="edu.degree" [name]="'eduDegree' + i" /></label>
+          <label>University <input type="text" [(ngModel)]="edu.university" [name]="'eduUniversity' + i" /></label>
+          <label>Graduation Date <input type="text" [(ngModel)]="edu.graduation_date" [name]="'eduDate' + i" /></label>
+        </div>
+        <button type="button" class="add-btn" (click)="addEducation()">+ Add Education</button>
+      </div>
+    </div>
 
-      <!-- Projects -->
-      <fieldset>
-        <legend>Projects</legend>
+    <!-- Projects -->
+    <div class="section">
+      <button type="button" class="section-header" (click)="projectsExpanded = !projectsExpanded">
+        <span class="chevron">{{ projectsExpanded ? '▾' : '▸' }}</span> Projects
+      </button>
+      <div class="section-body" *ngIf="projectsExpanded">
         <div class="entry" *ngFor="let project of draft.projects; let i = index">
           <div class="entry-header">
             <span>Entry {{ i + 1 }}</span>
-            <button type="button" class="remove-btn" (click)="removeProject(i)">Remove</button>
+            <span class="entry-actions">
+              <button type="button" class="move-btn" [disabled]="i === 0" (click)="moveItem(draft.projects, i, -1)">↑</button>
+              <button type="button" class="move-btn" [disabled]="i === draft.projects.length - 1" (click)="moveItem(draft.projects, i, 1)">↓</button>
+              <button type="button" class="remove-btn" (click)="removeProject(i)">Remove</button>
+            </span>
           </div>
           <label>Title <input type="text" [(ngModel)]="project.title" [name]="'projTitle' + i" /></label>
           <label>Description
@@ -93,53 +194,71 @@
           </label>
         </div>
         <button type="button" class="add-btn" (click)="addProject()">+ Add Project</button>
-      </fieldset>
+      </div>
+    </div>
 
-      <!-- Languages spoken -->
-      <fieldset>
-        <legend>Languages Spoken</legend>
+    <!-- Languages spoken -->
+    <div class="section">
+      <button type="button" class="section-header" (click)="languagesExpanded = !languagesExpanded">
+        <span class="chevron">{{ languagesExpanded ? '▾' : '▸' }}</span> Languages Spoken
+      </button>
+      <div class="section-body" *ngIf="languagesExpanded">
         <div class="list-row" *ngFor="let language of draft.languages; let i = index">
           <input type="text" [(ngModel)]="draft.languages[i]" [name]="'lang' + i" />
+          <button type="button" class="move-btn" [disabled]="i === 0" (click)="moveItem(draft.languages, i, -1)">↑</button>
+          <button type="button" class="move-btn" [disabled]="i === draft.languages.length - 1" (click)="moveItem(draft.languages, i, 1)">↓</button>
           <button type="button" class="remove-btn" (click)="removeListItem(draft.languages, i)">✕</button>
         </div>
         <button type="button" class="add-btn" (click)="addListItem(draft.languages)">+ Add Language</button>
-      </fieldset>
+      </div>
+    </div>
 
-      <!-- Soft Skills -->
-      <fieldset>
-        <legend>Soft Skills</legend>
+    <!-- Soft Skills -->
+    <div class="section">
+      <button type="button" class="section-header" (click)="softSkillsExpanded = !softSkillsExpanded">
+        <span class="chevron">{{ softSkillsExpanded ? '▾' : '▸' }}</span> Soft Skills
+      </button>
+      <div class="section-body" *ngIf="softSkillsExpanded">
         <div class="list-row" *ngFor="let skill of draft.softSkills; let i = index">
           <input type="text" [(ngModel)]="draft.softSkills[i]" [name]="'softSkill' + i" />
+          <button type="button" class="move-btn" [disabled]="i === 0" (click)="moveItem(draft.softSkills, i, -1)">↑</button>
+          <button type="button" class="move-btn" [disabled]="i === draft.softSkills.length - 1" (click)="moveItem(draft.softSkills, i, 1)">↓</button>
           <button type="button" class="remove-btn" (click)="removeListItem(draft.softSkills, i)">✕</button>
         </div>
         <button type="button" class="add-btn" (click)="addListItem(draft.softSkills)">+ Add Soft Skill</button>
-      </fieldset>
+      </div>
+    </div>
 
-      <!-- Other -->
-      <fieldset>
-        <legend>Other</legend>
+    <!-- Other -->
+    <div class="section">
+      <button type="button" class="section-header" (click)="otherExpanded = !otherExpanded">
+        <span class="chevron">{{ otherExpanded ? '▾' : '▸' }}</span> Other
+      </button>
+      <div class="section-body" *ngIf="otherExpanded">
         <div class="list-row" *ngFor="let item of draft.other; let i = index">
           <input type="text" [(ngModel)]="draft.other[i]" [name]="'other' + i" />
+          <button type="button" class="move-btn" [disabled]="i === 0" (click)="moveItem(draft.other, i, -1)">↑</button>
+          <button type="button" class="move-btn" [disabled]="i === draft.other.length - 1" (click)="moveItem(draft.other, i, 1)">↓</button>
           <button type="button" class="remove-btn" (click)="removeListItem(draft.other, i)">✕</button>
         </div>
         <button type="button" class="add-btn" (click)="addListItem(draft.other)">+ Add Item</button>
-      </fieldset>
-
-      <div class="actions">
-        <button type="submit" class="save-btn">Save Changes</button>
-        <button type="button" (click)="discard()">Discard Changes</button>
-        <button type="button" (click)="resetToDefault()">Reset to Default</button>
-        <span class="saved-hint" *ngIf="justSaved">Saved — the preview is updated.</span>
       </div>
-    </form>
-
-    <div class="import-export">
-      <button type="button" (click)="exportJSON()">Download JSON Backup</button>
-      <label class="import-label">
-        Import JSON Backup
-        <input type="file" accept="application/json" (change)="onImportFile($event)" />
-      </label>
-      <p class="import-error" *ngIf="importError">{{ importError }}</p>
     </div>
+
+    <div class="actions">
+      <button type="submit" class="save-btn">Save Changes</button>
+      <button type="button" (click)="discard()">Discard Changes</button>
+      <button type="button" (click)="resetToDefault()">Reset to Default</button>
+      <span class="saved-hint" *ngIf="justSaved">Saved — the preview is updated.</span>
+    </div>
+  </form>
+
+  <div class="import-export">
+    <button type="button" (click)="exportJSON()">Download JSON Backup</button>
+    <label class="import-label">
+      Import JSON Backup
+      <input type="file" accept="application/json" (change)="onImportFile($event)" />
+    </label>
+    <p class="import-error" *ngIf="importError">{{ importError }}</p>
   </div>
 </div>

@@ -55,11 +55,13 @@
       "description": "Entwicklung eines Tools zur effizienten Anpassung von Lebensläufen an Stellenanzeigen. Dieser PDF-Lebenslauf wurde mit dem Tool generiert – eine Live-Demo ist auf meiner GitHub-Seite verfügbar."
     }
   ],
-  "education": {
-    "degree": "Bachelor in Informatik",
-    "university": "Universität Valladolid, Spanien",
-    "graduation_date": "Abschluss im August 2024"
-  },
+  "education": [
+    {
+      "degree": "Bachelor in Informatik",
+      "university": "Universität Valladolid, Spanien",
+      "graduation_date": "Abschluss im August 2024"
+    }
+  ],
   "languages": [
     "Englisch - Fließend",
     "Deutsch - Anfänger (A2)",

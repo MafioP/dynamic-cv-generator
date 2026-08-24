@@ -42,9 +42,9 @@
       <!-- Education -->
       <section class="cv-section">
         <h3>{{data.titles.education}}</h3>
-        <div>
-          <h4>{{data.education.degree}}</h4>
-          <p>{{data.education.university}} | {{data.education.graduation_date}}</p>
+        <div *ngFor="let edu of data.education">
+          <h4>{{edu.degree}}</h4>
+          <p>{{edu.university}} | {{edu.graduation_date}}</p>
         </div>
       </section>
     </div>

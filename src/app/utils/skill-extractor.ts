@@ -19,9 +19,9 @@ export function getSearchableText(data: Partial<ResumeData>): string {
     parts.push(project.title, project.description);
   });
 
-  if (data.education) {
-    parts.push(data.education.degree);
-  }
+  (data.education ?? []).forEach(education => {
+    parts.push(education.degree);
+  });
 
   return parts.join(' ');
 }
