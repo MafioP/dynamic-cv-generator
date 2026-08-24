@@ -4,6 +4,8 @@
     <span
       *ngFor="let skill of availableSkills"
       [class.selected]="selectedSkills.includes(skill)"
+      [class.detected]="isDetected(skill)"
+      [title]="isDetected(skill) ? 'Found in your CV content' : ''"
       (click)="toggleSkill(skill)">
       {{ skill }}
     </span>

@@ -1,5 +1,8 @@
-import { Component, EventEmitter, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { CvService } from '../services/cv.service';
+import { extractSkillsFromText, getSearchableText } from '../utils/skill-extractor';
+import * as enData from '../../assets/content-en.json';
+import * as deData from '../../assets/content-de.json';
 
 
 @Component({
@@ -7,7 +10,7 @@ import { CvService } from '../services/cv.service';
   templateUrl: './input-form.component.html',
   styleUrls: ['./input-form.component.css']
 })
-export class InputFormComponent {
+export class InputFormComponent implements OnInit {
   availableSkills: string[] = [
     'Java', 'Python', 'C++', 'C#', 'JavaScript', 'TypeScript', 'Angular', 'Node.js', 'HTML5', 'CSS3',
     'MySQL', 'MongoDB',
@@ -18,6 +21,7 @@ export class InputFormComponent {
   ];
   selectedSkills: string[] = [];
   newSkill: string = '';
+  detectedSkills = new Set<string>();
 
   @Output() languageChange = new EventEmitter<string[]>(); // Emit an array of selected languages
 
@@ -30,6 +34,15 @@ export class InputFormComponent {
   }
 
   constructor(private cvService: CvService) {}
+
+  ngOnInit(): void {
+    const cvText = [enData, deData].map(getSearchableText).join(' ');
+    this.detectedSkills = new Set(extractSkillsFromText(cvText, this.availableSkills));
+  }
+
+  isDetected(skill: string): boolean {
+    return this.detectedSkills.has(skill);
+  }
 
   onLanguageChange(): void {
     const activeLanguages = Object.keys(this.selectedLanguages).filter(lang => this.selectedLanguages[lang]);

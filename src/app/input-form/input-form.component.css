@@ -24,6 +24,21 @@
   color: white;
 }
 
+.skills-tags span.detected {
+  box-shadow: 0 0 0 2px #28a745 inset;
+}
+
+.skills-tags span.detected::after {
+  content: '\2713';
+  margin-left: 6px;
+  color: #28a745;
+  font-weight: bold;
+}
+
+.skills-tags span.selected.detected::after {
+  color: white;
+}
+
 
 .add-skill {
   margin-top: 10px;
