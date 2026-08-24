@@ -147,7 +147,7 @@
         <span class="chevron">{{ experienceExpanded ? '▾' : '▸' }}</span> Experience
       </button>
       <div class="section-body" *ngIf="experienceExpanded">
-        <div class="entry" *ngFor="let experience of draft.experiences; let i = index">
+        <div class="entry" *ngFor="let experience of draft.experiences; let i = index; trackBy: trackByIndex">
           <div class="entry-header">
             <span>Entry {{ i + 1 }}</span>
             <span class="entry-actions">
@@ -182,7 +182,7 @@
         <span class="chevron">{{ educationExpanded ? '▾' : '▸' }}</span> Education
       </button>
       <div class="section-body" *ngIf="educationExpanded">
-        <div class="entry" *ngFor="let edu of draft.education; let i = index">
+        <div class="entry" *ngFor="let edu of draft.education; let i = index; trackBy: trackByIndex">
           <div class="entry-header">
             <span>Entry {{ i + 1 }}</span>
             <span class="entry-actions">
@@ -211,7 +211,7 @@
         <span class="chevron">{{ projectsExpanded ? '▾' : '▸' }}</span> Projects
       </button>
       <div class="section-body" *ngIf="projectsExpanded">
-        <div class="entry" *ngFor="let project of draft.projects; let i = index">
+        <div class="entry" *ngFor="let project of draft.projects; let i = index; trackBy: trackByIndex">
           <div class="entry-header">
             <span>Entry {{ i + 1 }}</span>
             <span class="entry-actions">
@@ -237,7 +237,7 @@
         <span class="chevron">{{ languagesExpanded ? '▾' : '▸' }}</span> Languages Spoken
       </button>
       <div class="section-body" *ngIf="languagesExpanded">
-        <div class="list-row" *ngFor="let language of draft.languages; let i = index">
+        <div class="list-row" *ngFor="let language of draft.languages; let i = index; trackBy: trackByIndex">
           <input type="text" [ngModel]="language" (ngModelChange)="draft.languages[i] = $event; liveSync()" />
           <button type="button" class="move-btn" [disabled]="i === 0" (click)="moveItem(draft.languages, i, -1)">↑</button>
           <button type="button" class="move-btn" [disabled]="i === draft.languages.length - 1" (click)="moveItem(draft.languages, i, 1)">↓</button>
@@ -253,7 +253,7 @@
         <span class="chevron">{{ softSkillsExpanded ? '▾' : '▸' }}</span> Soft Skills
       </button>
       <div class="section-body" *ngIf="softSkillsExpanded">
-        <div class="list-row" *ngFor="let skill of draft.softSkills; let i = index">
+        <div class="list-row" *ngFor="let skill of draft.softSkills; let i = index; trackBy: trackByIndex">
           <input type="text" [ngModel]="skill" (ngModelChange)="draft.softSkills[i] = $event; liveSync()" />
           <button type="button" class="move-btn" [disabled]="i === 0" (click)="moveItem(draft.softSkills, i, -1)">↑</button>
           <button type="button" class="move-btn" [disabled]="i === draft.softSkills.length - 1" (click)="moveItem(draft.softSkills, i, 1)">↓</button>
@@ -269,7 +269,7 @@
         <span class="chevron">{{ otherExpanded ? '▾' : '▸' }}</span> Other
       </button>
       <div class="section-body" *ngIf="otherExpanded">
-        <div class="list-row" *ngFor="let item of draft.other; let i = index">
+        <div class="list-row" *ngFor="let item of draft.other; let i = index; trackBy: trackByIndex">
           <input type="text" [ngModel]="item" (ngModelChange)="draft.other[i] = $event; liveSync()" />
           <button type="button" class="move-btn" [disabled]="i === 0" (click)="moveItem(draft.other, i, -1)">↑</button>
           <button type="button" class="move-btn" [disabled]="i === draft.other.length - 1" (click)="moveItem(draft.other, i, 1)">↓</button>

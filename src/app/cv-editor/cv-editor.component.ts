@@ -173,6 +173,18 @@ export class CvEditorComponent implements OnInit {
 
   // --- Generic reordering, shared by every repeatable list section ---
 
+  // Used as *ngFor's trackBy on every repeatable list below. Without it,
+  // Angular's default trackBy identifies string-array items by value, so
+  // editing so much as one character (a "new" string) makes it destroy and
+  // recreate that <input> DOM node -- which drops focus on every keystroke.
+  // Tracking by index instead makes Angular update the existing node in
+  // place, for both the string lists and the object lists (where it also
+  // makes every list update predictable rather than relying on move
+  // detection).
+  trackByIndex(index: number): number {
+    return index;
+  }
+
   moveItem<T>(list: T[], index: number, delta: -1 | 1): void {
     const target = index + delta;
     if (target < 0 || target >= list.length) {
