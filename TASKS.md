@@ -6,9 +6,8 @@ Backlog of things to do on this project. Move an item to `WORKLOG.md` (with a sh
 
 - [ ] Make CV content editable in the UI (large task, tackled in steps — persistence: localStorage + export/import JSON):
   - [x] Step 1: `CvContentService` — owns `{ en: ResumeData, de: ResumeData }` behind a BehaviorSubject, seeded from `content-en.json`/`content-de.json` or localStorage if present; persists on every update. Refactored `CvPreviewComponent` and `InputFormComponent` to read from it instead of importing the JSON files directly (read-only wiring, no editor UI yet).
-  - [ ] Step 2: Editing UI — a form (per-language) for contact details, about, experiences, education, projects, languages, soft skills, other — bound to the service.
-  - [ ] Step 3: Export (download JSON) / import (upload JSON) buttons wired to the service.
-  - [ ] Step 4: Polish — add/remove/reorder entries in list sections (experiences, projects), a "reset to default" action, basic validation.
+  - [x] Step 2 + 3: `CvEditorComponent` — collapsible "Edit CV Content" panel below the preview, per-language tabs (EN/DE, both drafts kept in memory so switching tabs doesn't lose edits), a form for contact details, about, section headings, experiences (add/remove, details as one-bullet-per-line), education, projects (add/remove), and the languages/soft-skills/other string lists (add/remove). Save commits the active language's draft to `CvContentService` (live preview update); Discard reverts it; Reset to Default reloads the bundled JSON. Also added Download/Import JSON backup buttons wired to `exportAsJSON`/`importFromJSON`.
+  - [ ] Step 4: Polish — reorder entries (drag or up/down) in list sections, inline validation (e.g. required name/email), maybe confirm-before-discard if there are unsaved edits.
 
 ## Known issues (deprioritized)
 
