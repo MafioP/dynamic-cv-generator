@@ -1,9 +1,8 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { CvService } from '../services/cv.service';
+import { CvContentService } from '../services/cv-content.service';
 import { extractSkillsFromText, getSearchableText } from '../utils/skill-extractor';
 import { SKILL_CATEGORIES, SkillCategory } from '../data/skill-categories';
-import * as enData from '../../assets/content-en.json';
-import * as deData from '../../assets/content-de.json';
 
 const CUSTOM_CATEGORY = 'Custom';
 
@@ -31,11 +30,13 @@ export class InputFormComponent implements OnInit {
     this.downloadPDF.emit();
   }
 
-  constructor(private cvService: CvService) {}
+  constructor(private cvService: CvService, private cvContentService: CvContentService) {}
 
   ngOnInit(): void {
-    const cvText = [enData, deData].map(getSearchableText).join(' ');
-    this.detectedSkills = extractSkillsFromText(cvText, this.allSkills());
+    this.cvContentService.content$.subscribe((content) => {
+      const cvText = [content.en, content.de].map(getSearchableText).join(' ');
+      this.detectedSkills = extractSkillsFromText(cvText, this.allSkills());
+    });
   }
 
   allSkills(): string[] {

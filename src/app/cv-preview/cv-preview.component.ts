@@ -1,10 +1,9 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges } from '@angular/core';
 import { CvService } from '../services/cv.service';
+import { CvContentService, CvContent } from '../services/cv-content.service';
 import jsPDF from 'jspdf';
 import { ImageConverterService } from '../services/image-converter.service';
 import { ResumeData, ContactDetails } from '../interfaces/profile';
-import * as enData from '../../assets/content-en.json';
-import * as deData from '../../assets/content-de.json';
 import '../../assets/arial-normal'
 import '../../assets/G_ari_bd-bold'
 
@@ -14,7 +13,10 @@ import '../../assets/G_ari_bd-bold'
   styleUrls: ['./cv-preview.component.css'],
 })
 export class CvPreviewComponent implements OnChanges{
-  profileData = [deData, enData];
+  // Assigned synchronously in the constructor via the content$ subscription
+  // (BehaviorSubject emits its current value immediately on subscribe).
+  content!: CvContent;
+  profileData: ResumeData[] = [];
   profilePicBase64: string | null = null;
   skills: string[] = [];
 
@@ -23,10 +25,15 @@ export class CvPreviewComponent implements OnChanges{
 
   constructor(
     private cvService: CvService,
+    private cvContentService: CvContentService,
     private imageConverterService: ImageConverterService
   ) {
     this.cvService.cvData.subscribe((data) => {
       this.skills = data.skills;
+    });
+    this.cvContentService.content$.subscribe((content) => {
+      this.content = content;
+      this.updateProfileData();
     });
     this.imageConverterService
       .convertImageToBase64('assets/Profilepic.png')
@@ -40,7 +47,11 @@ export class CvPreviewComponent implements OnChanges{
       );
   }
   ngOnChanges(): void {
-    this.profileData = this.selectedLanguages.map(lang => (lang === 'de' ? deData : enData));
+    this.updateProfileData();
+  }
+
+  private updateProfileData(): void {
+    this.profileData = this.selectedLanguages.map(lang => (lang === 'de' ? this.content.de : this.content.en));
   }
 
   getComputedStyles(element: HTMLElement): Record<string, string> {

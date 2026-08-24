@@ -28,6 +28,16 @@ export interface Education {
   graduation_date: string;
 }
 
+// Interface for the localized section headings shown in the preview/PDF
+export interface SectionTitles {
+  experience: string;
+  project: string;
+  education: string;
+  languages: string;
+  skills: string;
+  other: string;
+}
+
 // Main Interface for the Entire Data Structure
 export interface ResumeData {
   contactDetails: ContactDetails;
@@ -38,4 +48,5 @@ export interface ResumeData {
   languages: string[];
   softSkills: string[];
   other: string[];
+  titles: SectionTitles;
 }
