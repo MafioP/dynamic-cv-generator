@@ -20,3 +20,5 @@ Backlog of things to do on this project. Move an item to `WORKLOG.md` (with a sh
 - [x] Document the codebase in `CLAUDE.md`.
 - [x] Auto-detect skills mentioned in the CV content and highlight them as suggestions in the skill picker.
 - [x] Redesign the skill picker: categorized skill groups, a pinned "Suggested from your CV" section, and a combined search/add field.
+- [x] Fixed a focus-loss bug when typing in Languages Spoken/Soft Skills/Other (missing `*ngFor` `trackBy` on primitive-array lists).
+- [x] Persist selected skills (`CvService`) to localStorage, same pattern as CV content — survives a page reload, including custom (non-dictionary) skills, which get restored into the picker as a "Custom" category.
